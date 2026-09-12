@@ -4,9 +4,8 @@ const TakeItForward = () => {
   return (
     <section className="bg-white w-full py-16 md:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-
         <div className="flex flex-col lg:flex-row items-center">
-
+          
           {/* LEFT - PHONE VIDEO */}
           <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
             <video
@@ -29,7 +28,7 @@ const TakeItForward = () => {
           {/* RIGHT - CONTENT */}
           <div className="w-full lg:w-1/2 mt-12 lg:mt-0">
 
-            {/* Heading */}
+            {/* HEADING */}
             <h2
               className="
                 text-black
@@ -45,7 +44,7 @@ const TakeItForward = () => {
               Let's take it forward
             </h2>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
             <div
               className="
                 border-l-2
@@ -83,10 +82,10 @@ const TakeItForward = () => {
             {/* APP BUTTONS */}
             <div className="flex flex-wrap items-center gap-6">
 
-              {/* App Store */}
-              <a
-                href="#"
-                className="inline-block"
+              {/* APP STORE */}
+              <button
+                type="button"
+                className="inline-block cursor-pointer"
               >
                 <img
                   src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
@@ -98,12 +97,12 @@ const TakeItForward = () => {
                     object-contain
                   "
                 />
-              </a>
+              </button>
 
-              {/* Google Play */}
-              <a
-                href="#"
-                className="inline-block"
+              {/* GOOGLE PLAY */}
+              <button
+                type="button"
+                className="inline-block cursor-pointer"
               >
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
@@ -115,10 +114,9 @@ const TakeItForward = () => {
                     object-contain
                   "
                 />
-              </a>
+              </button>
 
             </div>
-
           </div>
         </div>
       </div>
