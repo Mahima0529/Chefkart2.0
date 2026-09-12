@@ -1,3 +1,4 @@
+
 .App {
   text-align: center;
 }
@@ -34,5 +35,59 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Prevent testimonial slider from overflowing */
+.slick-slider {
+  width: 100%;
+}
+
+.slick-list {
+  width: 100%;
+  overflow: hidden;
+}
+
+.slick-track {
+  display: flex;
+}
+
+.slick-slide {
+  width: 100%;
+}
+
+.slick-slide > div {
+  width: 100%;
+}
+
+/* Mobile: exactly one testimonial */
+@media (max-width: 640px) {
+  .testimonial-slider .slick-slide {
+    width: 100% !important;
+  }
+
+  .testimonial-slider .slick-slide > div {
+    width: 100% !important;
+  }
+
+  .testimonial-slider .slick-list {
+    overflow: hidden !important;
   }
 }

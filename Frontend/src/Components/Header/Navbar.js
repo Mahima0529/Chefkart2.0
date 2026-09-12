@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { FaHamburger, FaChevronDown, FaChevronUp, FaChevronRight } from "react-icons/fa";
+import {
+  FaHamburger,
+  FaChevronDown,
+  FaChevronUp,
+  FaChevronRight,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { GiTireIronCross } from "react-icons/gi";
 
@@ -7,154 +12,404 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setIsDropdownOpen(false);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-black text-white shadow-lg">
-      <div className="container mx-auto flex items-center justify-between p-5">
-        {/* Logo */}
-        <Link to="/" className="flex title-font font-medium items-center text-white">
+    <header className="relative top-0 w-full z-50 bg-black text-white shadow-lg">
+
+      {/* ================= MAIN NAVBAR ================= */}
+
+      <div className="container mx-auto flex items-center justify-between px-5 py-4">
+
+        {/* ================= LOGO ================= */}
+
+        <Link
+          to="/"
+          className="flex items-center flex-shrink-0"
+        >
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoErvIxAIWybuxDrbVZuRTz1B3ZaYWZTSqMw&s"
-            alt="Logo"
+            alt="ChefKart Logo"
             className="w-48 h-auto"
           />
         </Link>
 
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center text-base justify-center">
+
+        {/* ================================================= */}
+        {/* DESKTOP CENTER MENU */}
+        {/* ================================================= */}
+
+        <nav className="hidden md:flex items-center gap-10">
+
+          {/* OUR SERVICES */}
+
           <div className="relative">
+
             <button
-              className="mr-5 text-2xl text-white hover:text-orange-500 hover:underline flex items-center"
               onClick={toggleDropdown}
+              className="text-2xl text-white hover:text-orange-500 flex items-center"
             >
               Our Services
+
               <span className="ml-2">
-                {isDropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
+                {isDropdownOpen ? (
+                  <FaChevronUp className="text-lg" />
+                ) : (
+                  <FaChevronDown className="text-lg" />
+                )}
               </span>
             </button>
+
+
+            {/* DESKTOP SERVICES DROPDOWN */}
+
             {isDropdownOpen && (
-              <div className="absolute mt-2 w-60 bg-white text-black shadow-lg rounded-md z-10">
-                <Link
-                  to="/cook-for-month"
-                  className="px-4 py-2 block text-lg font-bold hover:text-orange-500"
-                >
-                  Cook for a Month
-                  <FaChevronRight className="ml-2" />
-                </Link>
-                <hr />
+              <div className="absolute left-0 top-full mt-3 w-64 bg-white text-black shadow-xl rounded-md z-[100] overflow-hidden">
+
                 <Link
                   to="/one-time-cook"
-                  className="px-4 py-2 block text-lg font-bold hover:text-orange-500"
+                  className="px-4 py-4 flex items-center justify-between text-lg font-bold hover:text-orange-500"
+                  onClick={closeDropdown}
                 >
-                  Chiefit: One Time Cook
-                  <FaChevronRight className="ml-2" />
+                  Chefit: One Time Cook
+                  <FaChevronRight />
                 </Link>
+
                 <hr />
+
                 <Link
                   to="/chef-for-party"
-                  className="px-4 py-2 block text-lg font-bold hover:text-orange-500"
+                  className="px-4 py-4 flex items-center justify-between text-lg font-bold hover:text-orange-500"
+                  onClick={closeDropdown}
                 >
                   Chef for Party
-                  <FaChevronRight className="ml-2" />
+                  <FaChevronRight />
                 </Link>
+
+                <hr />
+
+                <Link
+                  to="/join-chefkart"
+                  className="px-4 py-4 flex items-center justify-between text-lg font-bold hover:text-orange-500"
+                  onClick={closeDropdown}
+                >
+                  ChefKart से जुड़ें
+                  <FaChevronRight />
+                </Link>
+
               </div>
             )}
+
           </div>
-          <Link to="/join-chefkart" className="mr-5 text-2xl text-white hover:underline">
-            ChefKart से जुड़ें
-          </Link>
-          <Link to="/chef-search" className="mr-5 text-2xl text-white hover:underline">
+
+
+          {/* COOKS NEAR ME */}
+
+          <Link
+            to="/chef-search"
+            className="text-2xl text-white hover:text-orange-500 hover:underline"
+          >
             Cooks Near Me
           </Link>
-          <Link to="/contact">
-          <button className="text-white text-2xl bg-orange-500 py-2 px-6 rounded-lg hover:bg-orange-600">
-            Contact Us
-          </button>
-          </Link>
-          <Link to="/register-chef">
-          <button className="text-white text-2xl  py-2 px-6 rounded-lg ">
-            Registration as the chef
-          </button>
-          </Link>
+
         </nav>
 
-        {/* Hamburger Menu Button */}
-        <button
-          className="text-white focus:outline-none"
-          onClick={toggleMenu}
-          aria-label="Toggle Menu"
-        >
-          <FaHamburger className="w-10 h-10" />
-        </button>
+
+        {/* ================================================= */}
+        {/* RIGHT SIDE */}
+        {/* ================================================= */}
+
+        <div className="flex items-center gap-4">
+
+          {/* ================= DESKTOP CONTACT ================= */}
+
+          <Link
+            to="/contact"
+            className="hidden md:block"
+          >
+            <button
+              className="
+                text-white
+                text-2xl
+                font-semibold
+                bg-orange-500
+                py-3
+                px-7
+                rounded-xl
+                hover:bg-orange-600
+                transition
+              "
+            >
+              Contact Us
+            </button>
+          </Link>
+
+
+          {/* ================= HAMBURGER ================= */}
+
+          <button
+            onClick={toggleMenu}
+            aria-label="Open Menu"
+            className="
+              w-16
+              h-16
+              md:w-20
+              md:h-20
+              rounded-full
+              bg-gray-200
+              text-black
+              flex
+              items-center
+              justify-center
+              hover:bg-gray-300
+              transition
+              focus:outline-none
+              flex-shrink-0
+            "
+          >
+            <FaHamburger className="w-8 h-8 md:w-10 md:h-10" />
+          </button>
+
+        </div>
+
       </div>
 
-      {/* Slide-in Menu from the Right */}
-      {isMenuOpen && (
-        <div className="fixed top-0 right-0 h-full w-1/2 bg-white text-black shadow-lg z-50">
-          <div className="flex flex-col p-5 space-y-4">
-            {/* Close Button */}
-            <button
-              className="self-end focus:outline-none"
-              onClick={toggleMenu}
-              aria-label="Close Menu"
-            >
-              <GiTireIronCross className="w-10 h-10 text-black" />
-            </button>
 
-            {/* Menu Links */}
+      {/* ========================================================= */}
+      {/* HAMBURGER SIDE MENU */}
+      {/* ========================================================= */}
+
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[999] bg-black/60">
+
+          {/* ================= MENU PANEL ================= */}
+
+          <div
+            className="
+              absolute
+              top-0
+              right-0
+              h-screen
+              w-[85%]
+              sm:w-[400px]
+              md:w-[400px]
+              lg:w-[430px]
+              bg-white
+              text-black
+              shadow-2xl
+              overflow-y-auto
+            "
+          >
+
+            {/* ================= CLOSE BUTTON ================= */}
+
+            <div className="flex justify-end p-6">
+
+              <button
+                onClick={toggleMenu}
+                className="focus:outline-none"
+                aria-label="Close Menu"
+              >
+                <GiTireIronCross className="w-9 h-9 text-black" />
+              </button>
+
+            </div>
+
+
+            {/* ================================================= */}
+            {/* MOBILE ONLY ITEMS */}
+            {/* ================================================= */}
+
+            <div className="md:hidden">
+
+              {/* ================= OUR SERVICES ================= */}
+
+              <div>
+
+                <div className="px-8 py-5 flex items-center justify-between border-t border-gray-200">
+
+                  <span className="text-xl font-bold">
+                    Our Services
+                  </span>
+
+                  <button
+                    onClick={toggleDropdown}
+                    className="focus:outline-none"
+                  >
+                    {isDropdownOpen ? (
+                      <FaChevronUp />
+                    ) : (
+                      <FaChevronDown />
+                    )}
+                  </button>
+
+                </div>
+
+
+                {/* SERVICES */}
+
+                {isDropdownOpen && (
+                  <div className="bg-gray-50">
+
+                    <Link
+                      to="/one-time-cook"
+                      className="px-10 py-4 flex items-center justify-between text-lg font-semibold border-t border-gray-200 hover:text-orange-500"
+                      onClick={closeMenu}
+                    >
+                      Chefit: One-time cook
+                      <FaChevronRight />
+                    </Link>
+
+                    <Link
+                      to="/chef-for-party"
+                      className="px-10 py-4 flex items-center justify-between text-lg font-semibold border-t border-gray-200 hover:text-orange-500"
+                      onClick={closeMenu}
+                    >
+                      Chef for Party
+                      <FaChevronRight />
+                    </Link>
+
+                    <Link
+                      to="/join-chefkart"
+                      className="px-10 py-4 flex items-center justify-between text-lg font-semibold border-t border-gray-200 hover:text-orange-500"
+                      onClick={closeMenu}
+                    >
+                      ChefKart से जुड़ें
+                      <FaChevronRight />
+                    </Link>
+
+                  </div>
+                )}
+
+              </div>
+
+
+              {/* ================= COOKS NEAR ME ================= */}
+
+              <Link
+                to="/chef-search"
+                className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+                onClick={closeMenu}
+              >
+                Cooks Near Me
+              </Link>
+
+            </div>
+
+
+            {/* ================================================= */}
+            {/* ITEMS SHOWN ON BOTH DESKTOP & MOBILE MENU */}
+            {/* ================================================= */}
+
+
+            {/* ABOUT US */}
+
             <Link
               to="/about"
-              className="text-lg font-bold hover:text-orange-500"
-              onClick={toggleMenu}
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+              onClick={closeMenu}
             >
               About Us
             </Link>
-            <hr />
+
+
+            {/* BLOG */}
+
             <Link
               to="/blog"
-              className="text-lg font-bold hover:text-orange-500"
-              onClick={toggleMenu}
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+              onClick={closeMenu}
             >
               Blog
             </Link>
-            <hr />
+
+
+            {/* CAREER */}
+
             <Link
               to="/career"
-              className="text-lg font-bold hover:text-orange-500"
-              onClick={toggleMenu}
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+              onClick={closeMenu}
             >
               Career
             </Link>
-            <hr />
+
+
+            {/* INVESTOR RELATIONS */}
+
             <Link
               to="/investor-relation"
-              className="text-lg font-bold hover:text-orange-500"
-              onClick={toggleMenu}
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+              onClick={closeMenu}
             >
               Investor Relations
             </Link>
-            <hr />
+
+
+            {/* TESTIMONIALS */}
+
             <Link
               to="/testimonial"
-              className="text-lg font-bold hover:text-orange-500"
-              onClick={toggleMenu}
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 hover:text-orange-500"
+              onClick={closeMenu}
             >
               Testimonials
             </Link>
-            <hr />
-            <button
-              className="mt-4 inline-flex items-center bg-orange-500 border-0 py-2 px-4 rounded text-white text-lg"
-              onClick={toggleMenu}
-            >
-              Contact Us
-              <FaChevronRight className="ml-1" />
-            </button>
-          
+
+
+            {/* ================================================= */}
+            {/* CONTACT US INSIDE HAMBURGER */}
+            {/* ================================================= */}
+
+            <div className="border-t border-gray-200 p-6">
+
+              <Link
+                to="/contact"
+                onClick={closeMenu}
+              >
+                <button
+                  className="
+                    w-full
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    bg-orange-500
+                    hover:bg-orange-600
+                    text-white
+                    text-xl
+                    font-semibold
+                    py-4
+                    rounded-xl
+                  "
+                >
+                  Contact Us
+                  <FaChevronRight />
+                </button>
+              </Link>
+
+            </div>
+
           </div>
+
         </div>
       )}
+
     </header>
   );
 };

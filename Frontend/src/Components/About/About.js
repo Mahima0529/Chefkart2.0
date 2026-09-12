@@ -1,8 +1,24 @@
-import React from 'react'
+import Contacts from "./Contact"
+import GallerySection from "./FounderCard"
+import Hero from "./Hero"
+import Lower3 from "./Lowerthree"
+import Lower4 from "./Lowertwo"
+import SocialSection from "./SoicalButton"
+import StatsSection from "./StatsSection"
+import VideoGallery from "./Videogallery"
 
 const About = () => {
   return (
-    <div>About</div>
+    <div>
+      <Hero/>
+      <Lower4/>
+      <Lower3/>
+      <StatsSection/>
+      <GallerySection/>
+      <VideoGallery/>
+      <Contacts/>
+     <SocialSection/>
+    </div>
   )
 }
 
