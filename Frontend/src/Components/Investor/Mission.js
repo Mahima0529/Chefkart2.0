@@ -11,7 +11,7 @@ const MissionSection = () => {
             Empowering cooks to bridge the gap between tasty food & healthy eating for our customers.
           </h2>
           <a
-            href="#"
+            href="/about"
             className="mt-10 inline-block text-gray-600 text-sm underline  "
           >
             Know More

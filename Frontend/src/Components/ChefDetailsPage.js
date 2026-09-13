@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
+import { FaMapMarkerAlt} from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
 
 const ChefDetails = () => {

@@ -140,9 +140,11 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import axios from "axios";
 
+ const cuisines = ["Indian", "Chinese", "Mexican", "Italian"];
+
 const GalleryAutoSlideZoom = () => {
   const [images, setImages] = useState([]);
-  const cuisines = ["Indian", "Chinese", "Mexican", "Italian"];
+ 
   const [currentCuisine, setCurrentCuisine] = useState(cuisines[0]);
   const [centerIndex, setCenterIndex] = useState(0);
 
