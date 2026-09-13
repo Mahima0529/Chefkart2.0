@@ -20,7 +20,7 @@ const ChefDirectory = () => {
   useEffect(() => {
     const fetchChefs = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/chef/get");
+        const response = await axios.get("https://chefkart2-0.onrender.com/chef/get");
         if (response.data && response.data.data) {
 
           setChefs(response.data.data);

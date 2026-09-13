@@ -10,7 +10,7 @@ const Investors = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:8000/investor/getinvestor")
+      .get("https://chefkart2-0.onrender.com/investor/getinvestor")
       .then((res) => {
         setInvestors(res.data);
         setIsLoading(false);

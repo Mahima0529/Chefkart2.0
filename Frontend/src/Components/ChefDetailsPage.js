@@ -11,7 +11,7 @@ const ChefDetails = () => {
   useEffect(() => {
     const fetchChef = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/chef/get`);
+        const res = await axios.get(`https://chefkart2-0.onrender.com/chef/get`);
         const found = res.data.data.find((c) => c._id === id);
         setChef(found);
       } catch (err) {

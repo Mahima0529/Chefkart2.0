@@ -14,7 +14,7 @@ const TabSwitch = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/blog/getAll");
+        const response = await axios.get("https://chefkart2-0.onrender.com/blog/getAll");
         const blogData = response.data;
         setData(blogData);
         if (blogData.length > 0) {
@@ -33,7 +33,7 @@ const TabSwitch = () => {
   const fetchBlogDetails = async (id) => {
     setModalLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8000/blog/get/${id}`);
+      const response = await axios.get(`https://chefkart2-0.onrender.com/blog/get/${id}`);
       setSelectedBlog(response.data);
       setModalOpen(true);
     } catch (err) {
