@@ -53,7 +53,7 @@
 
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import NotificationBanner from "./Components/Header/Head";
+import NotificationBanner from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Header/Navbar";
 import ChefDirectory from "./Components/ChefSearch";
