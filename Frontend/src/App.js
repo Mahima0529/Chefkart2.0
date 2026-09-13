@@ -66,7 +66,7 @@ const Hom = lazy(() => import("./Components/home/Hom"));
 const About = lazy(() => import("./Components/About/About"));
 const Contact = lazy(() => import("./Components/Contact/Contact"));
 const ChefConnection = lazy(() => import("./Components/ChefConection/ChefConnection"));
-const Month = lazy(() => import("./Components/CookForAmonth/Month"));
+
 const OneTime = lazy(() => import("./Components/OneTimeCook/OneTime"));
 const Chef = lazy(() => import("./Components/Chefforparty/Chef"));
 const Testi = lazy(() => import("./Components/Testimonial/Testi"));
@@ -81,7 +81,7 @@ const App = () => {
     { path: "blog", element: <Blog /> },
     { path: "contact", element: <Contact /> },
     { path: "join-chefkart", element: <ChefConnection /> },
-    { path: "cook-for-month", element: <Month /> },
+
     { path: "one-time-cook", element: <OneTime /> },
     { path: "chef-for-party", element: <Chef /> },
     { path: "testimonial", element: <Testi /> },
