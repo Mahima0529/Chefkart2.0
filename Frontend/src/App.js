@@ -58,7 +58,7 @@ import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Header/Navbar";
 import ChefDirectory from "./Components/ChefSearch";
 import ChefDetails from "./Components/ChefDetailsPage";
-import Register from "./Components/ChefRegistration/Register";
+// import Register from "./Components/ChefRegistration/Register";
 import ChefFormFormik from "./Components/ChefRegistration/Register";
 
 // Lazy Loading Components
