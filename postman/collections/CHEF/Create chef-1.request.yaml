@@ -1,0 +1,38 @@
+$kind: http-request
+name: Create chef
+description: ""
+url: http://localhost:3000/chef/create
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\":\"john\",\r
+
+    \    \"Address\":\"dfe\",\r
+
+    \    \"profilepic\":\"hhtps://example.com/profilepis.jpg\",\r
+
+    \    \"city\": \"New York\",\r
+
+    \    \"area\": \"Downtown\",\r
+
+    \    \"country\": \"UK\",\r
+
+    \    \"email\": \"johndoe@gmail.com\",\r
+
+    \    \"experience\": \"10 years\",\r
+
+    \    \"phone\": \"476857474\",\r
+
+    \    \"pincode\": \"470775\",\r
+
+    \    \"state\": \"M.P.\"\r
+
+    }"
+settings:
+  strictSSL: false
+  followRedirects: true
+  disableCookies: false
+  maxResponseSize: 52428800
+order: 701855285658495
