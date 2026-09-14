@@ -92,17 +92,7 @@ npm install
 cp .env.example .env
 ```
 
-Open `.env` in `Backend/` and configure your credentials:
-```env
-PORT=8080
-JWT_SECRET=your_jwt_secret_key
-MONGODB_URL=your_mongodb_atlas_connection_string
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-```
+
 
 Start the backend server:
 ```bash
