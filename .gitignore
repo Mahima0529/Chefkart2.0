@@ -28,7 +28,6 @@ yarn-error.log*
 *.log
 
 # External template & temporary directories
-/Dashboard/
 .postman
 .postman/
 **/.postman/
