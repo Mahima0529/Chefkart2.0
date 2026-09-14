@@ -11,7 +11,7 @@ function InternalPage(){
 
     useEffect(() => {
         dispatch(setPageTitle({ title : "Investor" }))
-      }, [])
+      }, [dispatch])
 
 
     return(

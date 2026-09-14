@@ -10,7 +10,7 @@ function InternalPage(){
 
     useEffect(() => {
         dispatch(setPageTitle({ title : "JoinChefBlog Management" }))
-      }, [])
+      }, [dispatch])
 
 
 return(
