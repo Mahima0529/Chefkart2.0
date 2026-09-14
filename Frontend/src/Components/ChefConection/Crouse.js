@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Carousel = () => {
   const slides = [
@@ -106,24 +107,26 @@ const Carousel = () => {
                   {slide.description}
                 </p>
 
-                <button
-                  className="
-                    bg-orange-500
-                    hover:bg-orange-600
-                    text-white
-                    font-bold
-                    text-lg
-                    px-6
-                    py-3
-                    rounded-md
-                    mt-6
-                    shadow-lg
-                    transition-all
-                    duration-300
-                  "
-                >
-                  {slide.action}
-                </button>
+                <Link to="/register">
+                  <button
+                    className="
+                      bg-orange-500
+                      hover:bg-orange-600
+                      text-white
+                      font-bold
+                      text-lg
+                      px-6
+                      py-3
+                      rounded-md
+                      mt-6
+                      shadow-lg
+                      transition-all
+                      duration-300
+                    "
+                  >
+                    {slide.action}
+                  </button>
+                </Link>
 
               </div>
 

@@ -1,31 +1,56 @@
-const Booking=require('../model/Booking.Model');
+const Booking = require('../model/Booking.Model');
+const User = require('../model/User.Model');
 
-
-// create bOoking 
-
+// Create Booking
 const createBooking = async (req, res) => {
     try {
-        // Ensure the user is authenticated
-        if (!req.user || !req.user.userId) {
-            return res.status(403).json({ message: "Unauthorized: Invalid token" });
+        let userId = req.body.user || (req.user && req.user.userId);
+
+        // If no user ID provided, but guest provided email, link or create user
+        if (!userId && req.body.email) {
+            const cleanEmail = req.body.email.trim().toLowerCase();
+            let existingUser = await User.findOne({ email: cleanEmail });
+            if (!existingUser) {
+                existingUser = new User({
+                    name: req.body.name || cleanEmail.split('@')[0],
+                    email: cleanEmail,
+                    role: 'user'
+                });
+                await existingUser.save();
+            }
+            userId = existingUser._id;
         }
 
-        const { chef, bookingDate, status, notes } = req.body;
+        if (!userId) {
+            return res.status(400).json({ message: "User ID or customer contact email is required" });
+        }
 
-        // Create a new booking
+        const { chef, bookingDate, status, notes, amount, paymentStatus, orderId, paymentId } = req.body;
+        if (!chef || !bookingDate) {
+            return res.status(400).json({ message: "Chef and booking date are required" });
+        }
+
         const newBooking = new Booking({
-            user: req.user.userId,  // Use authenticated user's ID
+            user: userId,
             chef,
             bookingDate,
-            status,
-            notes
+            status: status || 'booked',
+            notes: notes || '',
+            amount: Number(amount) || 499,
+            paymentStatus: paymentStatus || 'pending',
+            orderId: orderId || '',
+            paymentId: paymentId || ''
         });
 
         await newBooking.save();
 
+        const populatedBooking = await Booking.findById(newBooking._id)
+            .populate('user', 'name email')
+            .populate('chef', 'name email phone city state');
+
         res.status(201).json({
             message: "Booking created successfully",
-            booking: newBooking
+            booking: populatedBooking || newBooking
         });
 
     } catch (error) {
@@ -34,85 +59,118 @@ const createBooking = async (req, res) => {
     }
 };
 
-
-const getBookings = async(req,res)=>{
-     try{
-        const Bookings=await Booking.find();
-
-        res.status(200).json({
-            message:"Booking fetched successfully",
-            data:Bookings
-        })
-     }
-     catch(error){
-         console.error(error);
-         res.status(500).json({message:"Internal server error"});
-     }
-}
-
-// we need a single booking
-const getBookingById=async(req,res)=>{
-     try{
-        
-        const {id}=req.params;
-         const Bookings=await Booking.findById(id);
-         if(!Booking){
-            return res.status(404).json({message:"Booking not found"});
-         }
-
-         res.status(200).json({
-            message:"Booking fetched successfully",
-            data:Bookings
-         })
-     }
-     catch(error){
-        console.error("Error:",error);
-         res.status(500).json({message:"Internal server error"});
-     }
-}
-
-
-const updateBooking =async(req,res)=>{
-    try{
-         const {id}=req.params;
-         const{chef, bookingDate, status, notes } =req.body;
-
-         const updatedBooking=await Booking.findByIdAndUpdate(id,{
-            chef,bookingDate,status,notes
-         },
-        {new:tru});
+// Get all bookings
+const getBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find()
+            .populate('user', 'name email phone')
+            .populate('chef', 'name email phone city state area')
+            .sort({ createdAt: -1, _id: -1 });
 
         res.status(200).json({
-            message:"Booking updated Successfully",
-            data:updatedBooking
-        })
-
+            message: "Bookings fetched successfully",
+            data: bookings || []
+        });
+    } catch (error) {
+        console.error("Error fetching bookings:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-    catch(error){
-        console.error("Error:",error);
-        res.status(500).json({
-            message: "Internal server error",
-          });
+};
+
+// Get a single booking
+const getBookingById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid booking ID format" });
+        }
+
+        const booking = await Booking.findById(id)
+            .populate('user', 'name email phone')
+            .populate('chef', 'name email phone city state area');
+
+        if (!booking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        res.status(200).json({
+            message: "Booking fetched successfully",
+            data: booking
+        });
+    } catch (error) {
+        console.error("Error fetching booking:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-}
+};
 
+// Update booking
+const updateBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid booking ID format" });
+        }
 
+        const { chef, bookingDate, status, notes, paymentStatus, paymentId, amount } = req.body;
+        const updateFields = {};
+        if (chef) updateFields.chef = chef;
+        if (bookingDate) updateFields.bookingDate = bookingDate;
+        if (status) updateFields.status = status;
+        if (notes !== undefined) updateFields.notes = notes;
+        if (paymentStatus) updateFields.paymentStatus = paymentStatus;
+        if (paymentId) updateFields.paymentId = paymentId;
+        if (amount !== undefined) updateFields.amount = amount;
 
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            id,
+            updateFields,
+            { new: true }
+        )
+        .populate('user', 'name email phone')
+        .populate('chef', 'name email phone city state area');
+
+        if (!updatedBooking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        res.status(200).json({
+            message: "Booking updated successfully",
+            data: updatedBooking
+        });
+
+    } catch (error) {
+        console.error("Error updating booking:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+// Delete single booking by ID
 const deleteBooking = async (req, res) => {
     try {
-      const bookings=await Booking.deleteMany();
-     
-  
-      res.status(200).json({
-        message: "Booking  deleted successfully",
-      data: bookings
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  };
+        const id = req.params.id || req.body.id || req.query.id;
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid or missing booking ID" });
+        }
 
-module.exports={createBooking,getBookings,getBookingById,updateBooking ,
+        const deleted = await Booking.findByIdAndDelete(id);
+        if (!deleted) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        res.status(200).json({
+            message: "Booking deleted successfully",
+            data: deleted
+        });
+    } catch (error) {
+        console.error("Error deleting booking:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+module.exports = {
+    createBooking,
+    getBookings,
+    getBookingById,
+    updateBooking,
     deleteBooking  
 };

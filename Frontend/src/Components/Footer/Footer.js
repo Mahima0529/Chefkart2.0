@@ -132,12 +132,21 @@ const Footer = () => {
                   </Link>
                 </li>
 
-                <li>
+                <li className="mb-3">
                   <Link
                     to="/chef-search"
                     className="text-gray-600 text-lg leading-loose hover:text-gray-800"
                   >
                     Cooks Near Me
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/register"
+                    className="text-gray-600 text-lg leading-loose hover:text-orange-500 font-semibold"
+                  >
+                    👨‍🍳 Register as Cook
                   </Link>
                 </li>
 
@@ -193,6 +202,14 @@ const Footer = () => {
                   </Link>
                 </li>
 
+                <li>
+                  <Link
+                    to="/dashboard"
+                    className="text-orange-500 font-semibold text-lg leading-loose hover:text-orange-600 flex items-center gap-1"
+                  >
+                    Admin Console 🔒
+                  </Link>
+                </li>
               </nav>
             </div>
 

@@ -24,7 +24,7 @@ const Heart3 = () => {
               className="object-cover object-center w-full h-full"
               controls
               width="700px"
-              src="https://chefkart-strapi-media.s3.ap-south-1.amazonaws.com/27389f2b_393b_42a7_bab8_7f0dc6ce3736_ca22a40ab0.mov"/>
+              src="https://storage.googleapis.com/chefkart-strapi-media/27389f2b_393b_42a7_bab8_7f0dc6ce3736_ca22a40ab0.mov"/>
           </div>
         </div>
       </section>

@@ -1,228 +1,163 @@
-
-
-
-// import React, { useState, useEffect } from "react";
-// import Slider from "react-slick";
-
-// const images = [
-//   "https://thechefkart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fchefkart-strapi-media%2Ftop_view_delicious_noodles_concept_9283eeb6c4.webp&w=640&q=75",
-//   "https://thechefkart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fchefkart-strapi-media%2Ffood_1_8870eea109_a39bceba07.webp&w=640&q=75",
-//   "https://thechefkart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fchefkart-strapi-media%2FMexican_9e7092cb2b.webp&w=640&q=75",
-//   "https://thechefkart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fchefkart-strapi-media%2FItalian_168d980a5a.webp&w=640&q=75",
-// ];
-
-// const cuisines = ["Indian", "Chinese", "Mexican", "Italian"];
-
-// const GalleryAutoSlideZoom = () => {
-//   const [currentCuisine, setCurrentCuisine] = useState(cuisines[0]);
-//   const [centerIndex, setCenterIndex] = useState(0);
-
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setCurrentCuisine((prevCuisine) => {
-//         const currentIndex = cuisines.indexOf(prevCuisine);
-//         const nextIndex = (currentIndex + 1) % cuisines.length;
-
-//         return cuisines[nextIndex];
-//       });
-//     }, 2000);
-
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   const settings = {
-//     slidesToShow: 3,
-//     slidesToScroll: 1,
-//     centerMode: true,
-//     centerPadding: "0px",
-//     infinite: true,
-//     autoplay: true,
-//     autoplaySpeed: 3000,
-//     pauseOnHover: true,
-
-//     afterChange: (current) => {
-//       setCenterIndex(current);
-//     },
-
-//     responsive: [
-//       {
-//         breakpoint: 1024,
-//         settings: {
-//           slidesToShow: 2,
-//           centerMode: true,
-//           centerPadding: "20px",
-//         },
-//       },
-//       {
-//         breakpoint: 768,
-//         settings: {
-//           slidesToShow: 1,
-//           centerMode: true,
-//           centerPadding: "20px",
-//         },
-//       },
-//       {
-//         breakpoint: 400,
-//         settings: {
-//           slidesToShow: 1,
-//           centerMode: true,
-//           centerPadding: "5px",
-//         },
-//       },
-//     ],
-//   };
-
-//   return (
-//     <section className="w-full min-w-0 overflow-hidden bg-white py-12">
-//       <div className="w-full max-w-7xl mx-auto px-4 sm:px-5">
-
-//         {/* Heading */}
-//         <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-700 font-bold mb-8 text-center">
-//           Craving{" "}
-//           <span className="text-orange-500">
-//             {currentCuisine}
-//           </span>{" "}
-//           food? Our Multi-Cuisine Experts
-//           <br className="hidden sm:block" />
-//           Have Got You!
-//         </h1>
-
-//         {/* Slider */}
-//         <div className="w-full min-w-0 overflow-hidden">
-//           <Slider {...settings}>
-//             {images.map((image, index) => (
-//               <div
-//                 key={index}
-//                 className="px-2 sm:px-4 mt-10"
-//               >
-//                 <div
-//                   className={`
-//                     flex
-//                     justify-center
-//                     transition-transform
-//                     duration-500
-//                     ease-in-out
-//                     ${
-//                       index === centerIndex
-//                         ? "scale-110 sm:scale-125"
-//                         : "scale-90"
-//                     }
-//                   `}
-//                 >
-//                   <img
-//                     src={image}
-//                     alt={`${cuisines[index]} food`}
-//                     className="
-//                       block
-//                       w-full
-//                       max-w-[320px]
-//                       aspect-square
-//                       object-cover
-//                       rounded-xl
-//                     "
-//                   />
-//                 </div>
-//               </div>
-//             ))}
-//           </Slider>
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default GalleryAutoSlideZoom;
-
-
-
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import axios from "axios";
+import api from "../../config/api";
 
- const cuisines = ["Indian", "Chinese", "Mexican", "Italian"];
+const cuisinesList = [
+  {
+    name: "Indian",
+    image: "https://storage.googleapis.com/chefkart-strapi-media/food_1_8870eea109_a39bceba07.webp",
+    description: "Rich curries, fragrant biryanis, & homestyle rotis"
+  },
+  {
+    name: "Chinese",
+    image: "https://storage.googleapis.com/chefkart-strapi-media/top_view_delicious_noodles_concept_9283eeb6c4.webp",
+    description: "Wok-tossed noodles, spicy gravies, & dim sums"
+  },
+  {
+    name: "Mexican",
+    image: "https://storage.googleapis.com/chefkart-strapi-media/Mexican_9e7092cb2b.webp",
+    description: "Zesty tacos, loaded nachos, & fresh guacamole"
+  },
+  {
+    name: "Italian",
+    image: "https://storage.googleapis.com/chefkart-strapi-media/Italian_168d980a5a.webp",
+    description: "Handcrafted pastas, rich sauces, & artisan pizzas"
+  }
+];
 
 const GalleryAutoSlideZoom = () => {
-  const [images, setImages] = useState([]);
- 
-  const [currentCuisine, setCurrentCuisine] = useState(cuisines[0]);
-  const [centerIndex, setCenterIndex] = useState(0);
+  const [items, setItems] = useState(cuisinesList);
+  const [currentCuisineIndex, setCurrentCuisineIndex] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
 
-  // Fetch images from backend
+  // Fetch food items from backend
   useEffect(() => {
-    const fetchImages = async () => {
+    const fetchFoods = async () => {
       try {
-        const response = await axios.get("https://chefkart2-0.onrender.com/food/getall");
-        setImages(response.data || []);
-      } catch (error) {
-        console.error("Error fetching food images:", error);
+        const res = await api.get("/food/getAll");
+        const data = Array.isArray(res.data) ? res.data : res.data?.data || [];
+        if (data.length >= 4) {
+          // Map backend images with cuisine metadata
+          const mapped = data.slice(0, 4).map((f, idx) => ({
+            name: cuisinesList[idx]?.name || `Cuisine ${idx + 1}`,
+            image: f.image || cuisinesList[idx]?.image,
+            description: cuisinesList[idx]?.description || "Handcrafted by our culinary specialists"
+          }));
+          setItems(mapped);
+        }
+      } catch (err) {
+        console.warn("Could not fetch foods from backend, using authentic defaults:", err);
       }
     };
 
-    fetchImages();
+    fetchFoods();
   }, []);
 
-  // Rotate cuisines every 2 seconds
+  // Cuisine name rotation in heading every 2.5s
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentCuisine((prevCuisine) => {
-        const currentIndex = cuisines.indexOf(prevCuisine);
-        const nextIndex = (currentIndex + 1) % cuisines.length;
-        return cuisines[nextIndex];
-      });
-    }, 2000);
+    const timer = setInterval(() => {
+      setCurrentCuisineIndex((prev) => (prev + 1) % cuisinesList.length);
+    }, 2500);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
   const settings = {
+    dots: true,
+    infinite: true,
+    speed: 700,
     slidesToShow: 3,
     slidesToScroll: 1,
-    centerMode: true,
-    infinite: true,
     autoplay: true,
     autoplaySpeed: 3000,
+    centerMode: true,
+    centerPadding: "0px",
     pauseOnHover: true,
-    focusOnSelect: true,
-    afterChange: (current) => setCenterIndex(current),
+    afterChange: (current) => setActiveSlide(current),
     responsive: [
       {
-        breakpoint: 768,
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          centerMode: true,
+          centerPadding: "20px"
+        }
+      },
+      {
+        breakpoint: 640,
         settings: {
           slidesToShow: 1,
-        },
-      },
-    ],
+          centerMode: false
+        }
+      }
+    ]
   };
 
   return (
-    <div className="bg-white py-12">
-      <div className="container mx-auto max-w-7xl px-5">
-        <h1 className="text-5xl text-gray-700 font-bold mb-8 text-center">
-          Craving{" "}
-          <span className="text-orange-500 font-bold">{currentCuisine}</span>{" "}
-          food? Our Multi-Cuisine Experts <br /> Have Got You!
-        </h1>
+    <section className="w-full bg-white py-14 sm:py-20 overflow-hidden">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+        {/* Dynamic Animated Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <span className="inline-block text-xs uppercase tracking-widest font-bold text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            Flavor Without Borders
+          </span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mt-3 leading-tight">
+            Craving{" "}
+            <span className="text-orange-500 underline decoration-orange-300 decoration-wavy transition-all duration-300">
+              {cuisinesList[currentCuisineIndex].name}
+            </span>{" "}
+            food?
+            <br />
+            Our Multi-Cuisine Experts Have Got You Covered!
+          </h2>
+          <p className="text-gray-500 mt-3 text-sm sm:text-base max-w-xl mx-auto">
+            From fiery Sichuan noodles to buttery Dal Makhani, satisfy every craving with trained chefs.
+          </p>
+        </div>
 
-        <Slider {...settings}>
-          {images.map((item, index) => (
-            <div key={item._id} className="px-20 mt-20 h-96 w-96">
-              <div
-                className={`group transition-transform duration-500 ease-in-out ${
-                  index === centerIndex ? "scale-150" : "scale-90"
-                }`}
-              >
-                <img
-                  src={item.image}
-                  alt={`Food ${index}`}
-                  className="object-cover w-full h-full rounded-2xl"
-                />
-              </div>
-            </div>
-          ))}
-        </Slider>
+        {/* Carousel */}
+        <div className="w-full min-h-[360px] relative">
+          <Slider {...settings}>
+            {items.map((item, idx) => {
+              const isCenter = idx === activeSlide;
+              return (
+                <div key={idx} className="px-3 py-6">
+                  <div
+                    className={`transition-all duration-500 ease-out rounded-3xl overflow-hidden bg-white shadow-md border border-gray-100 ${
+                      isCenter
+                        ? "scale-105 sm:scale-110 shadow-2xl ring-4 ring-orange-400/30"
+                        : "opacity-85 hover:opacity-100"
+                    }`}
+                  >
+                    <div className="relative aspect-square sm:aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                      <img
+                        src={item.image}
+                        alt={`${item.name} food dish`}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = cuisinesList[idx % cuisinesList.length].image;
+                        }}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="bg-white/90 backdrop-blur-md text-gray-900 text-xs sm:text-sm font-bold px-3 py-1 rounded-full shadow-sm">
+                          {item.name}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5 text-center">
+                      <h3 className="text-lg font-bold text-gray-900">{item.name} Speciality</h3>
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1">{item.description}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </Slider>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

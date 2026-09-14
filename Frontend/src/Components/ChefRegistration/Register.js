@@ -1,273 +1,476 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../config/api";
+import { FaUserTie, FaMapMarkerAlt, FaUtensils, FaClock, FaCheckCircle, FaCamera } from "react-icons/fa";
 
-const inputClass =
-  "w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
-
-const ChefFormFormik = () => {
+const Register = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const uploadToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "marketdata");
-    const response = await axios.post("https://api.cloudinary.com/v1_1/de4ks8mkh/image/upload", formData);
-    return response.data.secure_url;
-  };
-
-  const chefSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    Address: Yup.string().required("Address is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    phone: Yup.string().required("Phone is required"),
-    city: Yup.string().required("City is required"),
-    state: Yup.string().required("State is required"),
-    pincode: Yup.string().required("Pincode is required"),
-  });
-
-  const initialValues = {
+  const [formData, setFormData] = useState({
     name: "",
-    Address: "",
-    profilepic: "",
-    default_cook_image: "",
-    city: "",
-    state: "",
-    area: "",
-    country: "",
-    pincode: "",
     email: "",
     phone: "",
-    experience: "",
-    verified: false,
-    starRating: 0,
-    totalRatings: 0,
-    language: [],
-    veg: false,
+    experience: "3",
+    city: "Delhi NCR",
+    state: "Delhi",
+    area: "",
+    Address: "",
+    pincode: "",
+    veg: true,
     nonVeg: false,
     aboutCook: "",
-    cuisineRatings: { Indian: 0, Continental: 0 },
-    availableLocations: [],
-    availability: [{ day: "", time: "" }],
-    housesServed: 0,
+    cuisines: "North Indian, Homestyle Meals",
+    languages: "Hindi, English",
+    timings: "Morning (7AM - 11AM), Evening (5PM - 9PM)",
+    housesServed: "50",
+    profilepic: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
-    try {
-      if (!values.profilepic || !values.default_cook_image) {
-        toast.error("Please upload both profile and cook images");
-        return;
-      }
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, profilepic: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-      setLoading(true);
-      console.log("Submitting values:", values); // Debug log
-      await axios.post("https://chefkart2-0.onrender.com/chef/create", values);
-      toast.success("Chef has registered successfully!");
-      resetForm();
-    } catch (error) {
-      toast.error("Registration failed");
-      console.error(error);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
+    try {
+      // Parse cuisines into array format
+      const cuisineList = formData.cuisines
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .map((c) => ({ cuisine: c, rating: 4.8 }));
+
+      // Parse languages into array format
+      const languageList = formData.languages
+        .split(",")
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+      const defaultAvatar =
+        "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&auto=format&fit=crop&q=80";
+
+      const defaultCookImg =
+        "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&auto=format&fit=crop&q=80";
+
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        experience: String(formData.experience),
+        city: formData.city || "Delhi NCR",
+        state: formData.state || "Delhi",
+        area: formData.area || formData.city || "Central",
+        Address: formData.Address || `${formData.city}, India`,
+        country: "India",
+        pincode: formData.pincode || "110001",
+        veg: formData.veg,
+        nonVeg: formData.nonVeg,
+        aboutCook:
+          formData.aboutCook ||
+          `${formData.name} is an experienced cook specializing in healthy, hygienic home meals.`,
+        cuisineRatings: cuisineList.length > 0 ? cuisineList : [{ cuisine: "North Indian", rating: 4.8 }],
+        language: languageList.length > 0 ? languageList : ["Hindi"],
+        availability: [{ start: "07:00 AM", end: "09:00 PM" }],
+        housesServed: Number(formData.housesServed) || 50,
+        starRating: 4.8,
+        totalRatings: 12,
+        verified: false,
+        profilepic: formData.profilepic || defaultAvatar,
+        default_cook_image: defaultCookImg
+      };
+
+      await api.post("/chef/create", payload);
+      setSuccess(true);
+    } catch (err) {
+      console.error("Chef registration error:", err);
+      setErrorMessage(
+        err.response?.data?.message || "Registration failed. Please check your details and try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 bg-white rounded-xl shadow-lg mt-8">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-6">
-        👨‍🍳 Register a Chef
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-orange-50/50 via-white to-gray-50 pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        {/* Navigation Breadcrumb */}
+        <div className="mb-6 text-sm text-gray-500 flex items-center gap-2">
+          <Link to="/" className="hover:text-orange-500">Home</Link>
+          <span>/</span>
+          <span className="text-gray-800 font-semibold">Chef Registration</span>
+        </div>
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={chefSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              ["name", "Name"],
-              ["Address", "Address"],
-              ["email", "Email"],
-              ["phone", "Phone"],
-              ["experience", "Experience"],
-              ["city", "City"],
-              ["state", "State"],
-              ["area", "Area"],
-              ["country", "Country"],
-              ["pincode", "Pincode"],
-              ["starRating", "Star Rating"],
-              ["totalRatings", "Total Ratings"],
-              ["housesServed", "Houses Served"],
-            ].map(([name, placeholder]) => (
-              <div key={name}>
-                <Field name={name} placeholder={placeholder} className={inputClass} />
-                <ErrorMessage name={name} component="div" className="text-sm text-red-600 mt-1" />
+        {success ? (
+          <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-orange-100 text-center">
+            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+              <FaCheckCircle />
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">Registration Successful!</h1>
+            <p className="text-gray-600 max-w-md mx-auto mb-8 text-base">
+              Welcome to ChefKart, <span className="font-semibold text-gray-900">{formData.name}</span>! Your profile has been submitted. Our onboarding team will verify your credentials shortly so you can start receiving customer bookings.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate("/chef-search")}
+                className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg transition"
+              >
+                Browse All Cooks
+              </button>
+              <Link
+                to="/"
+                className="px-8 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition"
+              >
+                Return to Home
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            {/* Header Banner */}
+            <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 px-6 sm:px-10 py-8 text-white">
+              <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
+                Join our 4500+ Cooks Network
               </div>
-            ))}
-
-            {/* Profile Image Upload */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Profile Pic</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={async (e) => {
-                  const url = await uploadToCloudinary(e.target.files[0]);
-                  setFieldValue("profilepic", url);
-                }}
-              />
-              {values.profilepic && (
-                <img
-                  src={values.profilepic}
-                  alt="profile"
-                  className="mt-2 w-20 h-20 rounded-full object-cover"
-                />
-              )}
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                👨‍🍳 Register as a ChefKart Cook
+              </h1>
+              <p className="text-orange-100 mt-2 text-sm sm:text-base">
+                Earn respect, grow your income, and bring authentic homemade flavors to happy households.
+              </p>
             </div>
 
-            {/* Cook Image Upload */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Default Cook Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={async (e) => {
-                  const url = await uploadToCloudinary(e.target.files[0]);
-                  setFieldValue("default_cook_image", url);
-                }}
-              />
-              {values.default_cook_image && (
-                <img
-                  src={values.default_cook_image}
-                  alt="default cook"
-                  className="mt-2 w-20 h-20 rounded-lg object-cover"
-                />
-              )}
-            </div>
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="mx-6 sm:mx-10 mt-6 p-4 bg-red-50 text-red-700 text-sm rounded-xl border border-red-200">
+                {errorMessage}
+              </div>
+            )}
 
-            {/* Checkboxes */}
-            <div className="col-span-1 sm:col-span-2 flex flex-wrap items-center gap-4">
-              <label className="flex items-center gap-2">
-                <Field type="checkbox" name="veg" /> Veg
-              </label>
-              <label className="flex items-center gap-2">
-                <Field type="checkbox" name="nonVeg" /> Non-Veg
-              </label>
-              <label className="flex items-center gap-2">
-                <Field type="checkbox" name="verified" /> Verified
-              </label>
-            </div>
-
-            {/* About Cook */}
-            <div className="col-span-1 sm:col-span-2">
-              <label className="block mb-1 font-medium">About Cook</label>
-              <Field
-                as="textarea"
-                name="aboutCook"
-                rows={4}
-                placeholder="Write something about the cook..."
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            {/* Cuisine Ratings */}
-            <Field
-              name="cuisineRatings.Indian"
-              type="number"
-              placeholder="Indian Cuisine Rating"
-              className={inputClass}
-            />
-            <Field
-              name="cuisineRatings.Continental"
-              type="number"
-              placeholder="Continental Cuisine Rating"
-              className={inputClass}
-            />
-
-            {/* Comma-Separated Fields */}
-            <Field
-              name="language"
-              placeholder="Languages (comma separated)"
-              className={inputClass}
-              onChange={(e) =>
-                setFieldValue(
-                  "language",
-                  e.target.value.split(",").map((item) => item.trim())
-                )
-              }
-            />
-            <Field
-              name="availableLocations"
-              placeholder="Available Locations (comma separated)"
-              className={inputClass}
-              onChange={(e) =>
-                setFieldValue(
-                  "availableLocations",
-                  e.target.value.split(",").map((item) => item.trim())
-                )
-              }
-            />
-
-            {/* Availability FieldArray */}
-            <div className="col-span-1 sm:col-span-2">
-              <label className="block font-semibold text-gray-700 mb-2">Availability</label>
-              <FieldArray name="availability">
-                {({ push, remove }) => (
-                  <div className="space-y-2">
-                    {values.availability.map((slot, index) => (
-                      <div key={index} className="flex flex-col sm:flex-row items-center gap-2">
-                        <Field
-                          name={`availability[${index}].day`}
-                          placeholder="Day"
-                          className={`${inputClass} sm:w-1/2`}
-                        />
-                        <Field
-                          name={`availability[${index}].time`}
-                          placeholder="Time"
-                          className={`${inputClass} sm:w-1/2`}
-                        />
-                        {index > 0 && (
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="text-red-600 text-sm"
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => push({ day: "", time: "" })}
-                      className="text-blue-500 hover:underline mt-1"
-                    >
-                      + Add Slot
-                    </button>
+            {/* Registration Form */}
+            <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-8">
+              {/* Section 1: Basic Info */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b">
+                  <FaUserTie className="text-orange-500" /> 1. Personal & Contact Details
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="e.g. Ramesh Kumar"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
                   </div>
-                )}
-              </FieldArray>
-            </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="col-span-1 sm:col-span-2 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md text-lg font-semibold transition-all"
-            >
-              {loading ? "Submitting..." : "Register Chef"}
-            </button>
-          </Form>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="e.g. 9876543210"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="e.g. ramesh.cook@example.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Experience (Years) *
+                    </label>
+                    <input
+                      type="number"
+                      name="experience"
+                      min="0"
+                      max="40"
+                      required
+                      placeholder="e.g. 5"
+                      value={formData.experience}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Location */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b">
+                  <FaMapMarkerAlt className="text-orange-500" /> 2. Location & Service Area
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      required
+                      placeholder="e.g. Gurugram"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Area / Locality *
+                    </label>
+                    <input
+                      type="text"
+                      name="area"
+                      required
+                      placeholder="e.g. Sector 57"
+                      value={formData.area}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Pincode *
+                    </label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      required
+                      placeholder="e.g. 122003"
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Complete Address *
+                  </label>
+                  <input
+                    type="text"
+                    name="Address"
+                    required
+                    placeholder="e.g. House No. 42, Block B, Sushant Lok III"
+                    value={formData.Address}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Section 3: Culinary Profile */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b">
+                  <FaUtensils className="text-orange-500" /> 3. Cooking Specialties & Preferences
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Cuisines Known (Comma Separated) *
+                    </label>
+                    <input
+                      type="text"
+                      name="cuisines"
+                      required
+                      placeholder="e.g. North Indian, South Indian, Chinese, Italian"
+                      value={formData.cuisines}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Languages Spoken
+                    </label>
+                    <input
+                      type="text"
+                      name="languages"
+                      placeholder="e.g. Hindi, English, Punjabi"
+                      value={formData.languages}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center gap-6">
+                  <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Food Prepared:
+                  </span>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="veg"
+                      checked={formData.veg}
+                      onChange={handleChange}
+                      className="checkbox checkbox-warning checkbox-sm"
+                    />
+                    Vegetarian
+                  </label>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="nonVeg"
+                      checked={formData.nonVeg}
+                      onChange={handleChange}
+                      className="checkbox checkbox-warning checkbox-sm"
+                    />
+                    Non-Vegetarian
+                  </label>
+                </div>
+              </div>
+
+              {/* Section 4: Timings & Bio */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b">
+                  <FaClock className="text-orange-500" /> 4. Working Hours & Bio
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Available Time Slots
+                    </label>
+                    <input
+                      type="text"
+                      name="timings"
+                      placeholder="e.g. Morning (7AM - 11AM), Evening (5PM - 9PM)"
+                      value={formData.timings}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Approx. Households Served
+                    </label>
+                    <input
+                      type="number"
+                      name="housesServed"
+                      placeholder="e.g. 50"
+                      value={formData.housesServed}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    About Cook / Biography
+                  </label>
+                  <textarea
+                    name="aboutCook"
+                    rows="3"
+                    placeholder="Describe your cooking journey, specialties, cleanliness standards..."
+                    value={formData.aboutCook}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"
+                  ></textarea>
+                </div>
+              </div>
+
+              {/* Section 5: Photo Upload */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b">
+                  <FaCamera className="text-orange-500" /> 5. Profile Picture (Optional)
+                </h2>
+                <div className="flex items-center gap-4">
+                  {formData.profilepic ? (
+                    <img
+                      src={formData.profilepic}
+                      alt="Preview"
+                      className="w-20 h-20 rounded-2xl object-cover border-2 border-orange-300 shadow-md"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-2xl bg-orange-50 border-2 border-dashed border-orange-200 flex items-center justify-center text-orange-400 text-2xl">
+                      <FaUserTie />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="file-input file-input-bordered file-input-warning file-input-sm w-full max-w-xs"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      JPG, PNG or WEBP. If skipped, a standard chef avatar is assigned.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-4 border-t">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-lg disabled:opacity-50"
+                >
+                  {loading ? "Registering Your Profile..." : "Submit Chef Application"}
+                </button>
+                <p className="text-center text-xs text-gray-500 mt-3">
+                  By submitting, you agree to ChefKart's Partner Terms of Service and Code of Conduct.
+                </p>
+              </div>
+            </form>
+          </div>
         )}
-      </Formik>
-
-      <ToastContainer position="top-center" />
+      </div>
     </div>
   );
 };
 
-export default ChefFormFormik;
+export default Register;

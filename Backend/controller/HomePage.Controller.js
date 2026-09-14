@@ -38,16 +38,11 @@ const createKitchen = async (req, res) => {
   }
 };
 
-// get all blog posts
+// get all home images
 const getallHomeImage = async (req, res) => {
   try {
-    const Homes = await Home.find();
-
-    if (!Homes.length) {
-      return res.status(404).json({ message: "No Home posts found" });
-    }
-    
-    res.status(200).json(Homes); // Corrected from "blog" to "blogs"
+    const homes = await Home.find().sort({ updatedAt: -1 });
+    res.status(200).json(homes || []);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -57,17 +52,20 @@ const getallHomeImage = async (req, res) => {
 };
 
 
-//getting a single blog
+//getting a single home post
 const getHomeById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const Homes= await Home.findById(id); // Changed "blogs" to "blog"
-
-    if (!Homes) {
-      return res.status(404).json({ message: "Homes not found" });
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid ID format" });
     }
-    res.status(200).json(Homes); // Now correctly returning "blog"
+
+    const homeItem = await Home.findById(id);
+
+    if (!homeItem) {
+      return res.status(404).json({ message: "Home post not found" });
+    }
+    res.status(200).json(homeItem);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -77,37 +75,45 @@ const getHomeById = async (req, res) => {
 };
 
 
-// update all blogs
+// update home post
 const updateHomePage = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+
     const { title, content, category, image } = req.body;
-    let imageUrl = "";
-    //image uploading process
-    if (image) {
+    const existingHome = await Home.findById(id);
+    if (!existingHome) {
+      return res.status(404).json({ message: "Home post not found" });
+    }
+
+    let imageUrl = existingHome.image;
+    if (image && image.startsWith("data:")) {
       const result = await cloudinary.uploader.upload(image, {
-        folder: "blogs",
+        folder: "home",
       });
       imageUrl = result.secure_url;
+    } else if (image && (image.startsWith("http://") || image.startsWith("https://"))) {
+      imageUrl = image;
     }
+
     const updatedhome = await Home.findByIdAndUpdate(
       id,
       {
-        title,
-        content,
-        category,
+        title: title !== undefined ? title : existingHome.title,
+        content: content !== undefined ? content : existingHome.content,
+        category: category !== undefined ? category : existingHome.category,
         image: imageUrl,
       },
       { new: true }
     );
 
-    if (!updatedhome) {
-      return res.status(404).json({ message: "Blog not found" });
-    }
-
     res.status(200).json({
-      message: "homePage  is successfully updated successfully",
+      message: "Home page is successfully updated",
       updatedhome,
+      data: updatedhome
     });
   } catch (error) {
     console.error("Error:", error);
@@ -117,30 +123,25 @@ const updateHomePage = async (req, res) => {
   }
 };
 
-// delete a blog post by id
-
+// delete a home post by id
 const deletehomePage = async (req, res) => {
   try {
     const { id } = req.params;
- 
-
-    // Validate if ID is a valid MongoDB ObjectId
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid blog ID format" });
+      return res.status(400).json({ message: "Invalid ID format" });
     }
 
-    // Check if the blog exists before deletion
     const existingHome = await Home.findById(id);
     if (!existingHome) {
-      return res.status(404).json({ message: "Home not found" });
+      return res.status(404).json({ message: "Home post not found" });
     }
 
-    // Delete the blog
     const deletedHome = await Home.findByIdAndDelete(id);
 
     res.status(200).json({
-      message: "Home successfully deleted",
+      message: "Home post successfully deleted",
       deletedHome,
+      data: deletedHome
     });
   } catch (error) {
     console.error("Error:", error);

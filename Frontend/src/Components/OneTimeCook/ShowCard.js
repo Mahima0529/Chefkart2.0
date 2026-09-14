@@ -34,25 +34,28 @@ const ShowCard2 = () => {
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-10 mx-auto">
         {/* Responsive grid layout */}
-        <div className="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {cardData.map((card) => (
             <div
               key={card.id}
-              className="border-2 rounded-lg border-gray-200 border-opacity-50 p-6 flex flex-col sm:flex-row items-center bg-white"
+              className="border border-orange-100/80 rounded-2xl p-6 flex flex-col sm:flex-row items-center text-center sm:text-left bg-white shadow-sm hover:shadow-md transition"
             >
-              <div className="w-24 h-24 inline-flex items-center justify-center rounded-2xl bg-[#FFF2F2] flex-shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 inline-flex items-center justify-center rounded-2xl bg-orange-50 flex-shrink-0 mb-4 sm:mb-0">
                 <img
                   src={card.image}
                   alt={card.title}
-                  width="80"
-                  height="80"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&q=80";
+                  }}
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
                 />
               </div>
-              <div className="flex-grow ml-4">
-                <h2 className="text-gray-900 text-1xl sm:text-xl title-font font-bold mb-2">
+              <div className="flex-grow sm:ml-5">
+                <h3 className="text-gray-900 text-lg sm:text-xl font-bold mb-1.5">
                   {card.title}
-                </h2>
-                <p className="leading-relaxed text-lg text-center">
+                </h3>
+                <p className="leading-relaxed text-sm sm:text-base text-gray-600">
                   {card.description}
                 </p>
               </div>

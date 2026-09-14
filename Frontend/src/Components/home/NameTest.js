@@ -8,12 +8,11 @@ const Testimonial1 = () => {
       </h2>
       <div className="flex flex-col md:flex-row items-center max-w-8xl  justify-center h-auto mx-auto bg-white shadow-md rounded-lg p-6">
         {/* Text Section */}
-        <div className="md:w-1/2 mb-6 md:mb-0 md:mr-6 text-center  md:text-left">
-          <p className="text-5xl  text-gray-800 mb-4">
-            “Everyone was amazed by the kind of party we threw, and the food was
-            the talk of the party!”
+        <div className="md:w-1/2 mb-6 md:mb-0 md:mr-6 text-center md:text-left">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-serif text-gray-800 mb-4 leading-relaxed italic">
+            “Everyone was amazed by the kind of party we threw, and the food was the talk of the party!”
           </p>
-          <p className="text-md text-red-500 font-bold">Kavita</p>
+          <p className="text-lg text-orange-600 font-bold tracking-wide">— Kavita, Gurugram</p>
         </div>
 
         {/* Video Section */}
@@ -24,10 +23,10 @@ src="https://storage.googleapis.com/chefkart-strapi-media/27389f2b_393b_42a7_bab
 controls
               className="rounded-lg w-full"
             />
-            <button className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-12 h-12 text-white bg-red-500 rounded-full p-2"
+                className="w-12 h-12 text-white bg-orange-500 rounded-full p-2 shadow-lg opacity-80"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -37,7 +36,7 @@ controls
                   clipRule="evenodd"
                 />
               </svg>
-            </button>
+            </div>
           </div>
         </div>
       </div>

@@ -22,39 +22,58 @@ const createChef = async (req, res) => {
            totalRatings,
            language,
            veg,
-           nonVeg,
-           aboutCook,
-           cuisineRatings,
-           availableLocations,
-           availability,
-           housesServed
+            nonVeg,
+            aboutCook,
+            cuisineRatings,
+            availableLocations,
+            availability,
+            housesServed,
+            price,
+            serviceType
        } = req.body;
 
-       // ✅ Check required fields
-       if (!name || !Address || !city || !state || !area || !country || !pincode || !email || !phone || !experience) {
-           return res.status(400).json({ message: "All required fields must be filled" });
-       }
+        // Provide sensible defaults for optional address components if omitted
+        const finalAddress = Address || city || "Gurugram";
+        const finalCity = city || "Gurugram";
+        const finalState = state || "Haryana";
+        const finalArea = area || "Cyber City";
+        const finalCountry = country || "India";
+        const finalPincode = pincode || "122002";
 
-       // ✅ Check if chef already exists by email
-       const existingChef = await ChefModel.findOne({ email });
-       if (existingChef) {
-           return res.status(400).json({ message: "Chef already exists" });
-       }
+        // Check required fields
+        if (!name || !email || !phone || !experience) {
+            return res.status(400).json({ message: "Name, email, phone, and experience are required" });
+        }
 
-      
-       // ✅ Create and save the new chef
-       const newChef = new ChefModel({
-           name,
-           Address,
-           city,
-           state,
-           area,
-           country,
-           pincode,
-           email,
-           phone,
-           experience,
-           profilepic,
+        // Check if chef already exists by email
+        const existingChef = await ChefModel.findOne({ email });
+        if (existingChef) {
+            return res.status(400).json({ message: "Chef with this email already exists" });
+        }
+
+        let profilepicUrl = profilepic || "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=500";
+        if (profilepic && profilepic.startsWith("data:")) {
+            try {
+                const uploadResult = await cloudinary.uploader.upload(profilepic, { folder: "Chef" });
+                profilepicUrl = uploadResult.secure_url;
+            } catch (upErr) {
+                console.warn("Cloudinary upload failed, keeping base64 or default:", upErr.message);
+            }
+        }
+
+        // Create and save the new chef
+        const newChef = new ChefModel({
+            name,
+            Address: finalAddress,
+            city: finalCity,
+            state: finalState,
+            area: finalArea,
+            country: finalCountry,
+            pincode: finalPincode,
+            email,
+            phone,
+            experience,
+            profilepic: profilepicUrl,
            default_cook_image,
            verified,
            starRating,
@@ -66,7 +85,9 @@ const createChef = async (req, res) => {
            cuisineRatings,
            availableLocations,
            availability,
-           housesServed
+           housesServed,
+            price: Number(price) || 499,
+            serviceType: serviceType || 'One-Time Cook'
        });
 
        await newChef.save();
@@ -212,15 +233,17 @@ const deleteCheftById = async (req, res) => {
         }
 
         await ChefModel.findByIdAndDelete(id);
-        res.status(200).json({ message: "Chef deleted successfully" });
+        res.status(200).json({ message: "Chef deleted successfully", data: chef });
 
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 
-// Delete all chefs
+const deleteChefById = deleteCheftById;
+
+// Delete all chefs (Admin only)
 const DeleteAllChef = async (req, res) => {
     try {
         await ChefModel.deleteMany();
@@ -238,6 +261,7 @@ module.exports = {
     getAllChef,
     getById,
     updateChef,
+    deleteChefById,
     deleteCheftById,
     DeleteAllChef
 };

@@ -9,6 +9,8 @@ const connectDB = async () => {
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    const { seedInitialAdmin } = require('../controller/User.controller');
+    await seedInitialAdmin();
   } catch (err) {
     console.error(`Error: ${err.message}`);
     process.exit(1);

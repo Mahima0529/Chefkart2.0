@@ -30,6 +30,8 @@ const ChefSchema = new mongoose.Schema({
         end: { type: String }    // "12:30 PM"
     }],
     housesServed: { type: Number, default: 0 },
+    price: { type: Number, default: 499 }, // Base service rate in INR
+    serviceType: { type: String, default: 'One-Time Cook' }, // e.g. One-Time Cook, Party Cook, Monthly Cook
     updatedAt: { type: Date, default: Date.now }
 });
 

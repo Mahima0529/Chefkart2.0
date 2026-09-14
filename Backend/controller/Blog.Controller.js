@@ -41,13 +41,8 @@ const createBlog = async (req, res) => {
 // get all blog posts
 const getallBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find();
-
-    if (!blogs.length) {
-      return res.status(404).json({ message: "No blog posts found" });
-    }
-    
-    res.status(200).json(blogs); // Corrected from "blog" to "blogs"
+    const blogs = await Blog.find().sort({ updatedAt: -1 });
+    res.status(200).json(blogs || []);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -61,13 +56,16 @@ const getallBlogs = async (req, res) => {
 const getBlogById = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid blog ID format" });
+    }
 
-    const blog = await Blog.findById(id); // Changed "blogs" to "blog"
+    const blog = await Blog.findById(id);
 
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
-    res.status(200).json(blog); // Now correctly returning "blog"
+    res.status(200).json(blog);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -77,37 +75,43 @@ const getBlogById = async (req, res) => {
 };
 
 
-// update all blogs
+// update blog
 const updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, category, image } = req.body;
-    let imageUrl = "";
-    //image uploading process
-    if (image) {
-      const result = await cloudinary.uploader.upload(image, {
-        folder: "blogs",
-      });
-      imageUrl = result.secure_url;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid blog ID format" });
     }
+
+    const { title, content, category, image } = req.body;
+    const existingBlog = await Blog.findById(id);
+    if (!existingBlog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    let imageUrl = existingBlog.image;
+    if (image && image.startsWith("data:")) {
+      const result = await cloudinary.uploader.upload(image, { folder: "blogs" });
+      imageUrl = result.secure_url;
+    } else if (image && (image.startsWith("http://") || image.startsWith("https://"))) {
+      imageUrl = image;
+    }
+
     const updateBlogs = await Blog.findByIdAndUpdate(
       id,
       {
-        title,
-        content,
-        category,
+        title: title !== undefined ? title : existingBlog.title,
+        content: content !== undefined ? content : existingBlog.content,
+        category: category !== undefined ? category : existingBlog.category,
         image: imageUrl,
       },
       { new: true }
     );
 
-    if (!updateBlogs) {
-      return res.status(404).json({ message: "Blog not found" });
-    }
-
     res.status(200).json({
-      message: "Blog  is successfully updated successfully",
+      message: "Blog is updated successfully",
       updateBlogs,
+      data: updateBlogs
     });
   } catch (error) {
     console.error("Error:", error);

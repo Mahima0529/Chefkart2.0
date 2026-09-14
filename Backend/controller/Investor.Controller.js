@@ -1,148 +1,138 @@
 const { cloudinary } = require("../config/cloudinary");
 const Investor = require("../model/Investor.Model");
 
-//create a new blog post with the provided data
-
+// Create investor
 const createInvestor = async (req, res) => {
   try {
-    const { title, subtitle,  description,image } = req.body;
+    const { title, subtitle, description, image } = req.body;
  
-    // check   if the blog is already exists
-    const existingData=await Investor.findOne({title})
-
-    if(existingData){
-      return res.status(400).json({message:"This blog already exists"})
+    if (!title || !description) {
+      return res.status(400).json({ message: "Title and description are required" });
     }
 
-    
-    const newBlog = new Investor({
-        title, subtitle,  description,image 
+    const existingData = await Investor.findOne({ title });
+    if (existingData) {
+      return res.status(400).json({ message: "An investor item with this title already exists" });
+    }
+
+    const newInvestor = new Investor({
+      title,
+      subtitle: subtitle || "",
+      description,
+      image: image || ""
     });
-    await newBlog.save();
+    await newInvestor.save();
 
     res.status(201).json({
-      message: "Investor is successfully created",
-      
+      message: "Investor created successfully",
+      data: newInvestor
     });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Error creating investor:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
+// Get all investors
 const getallInvestor = async (req, res) => {
   try {
-    const Investors = await Investor.find();
-
-    if (!Investors.length) {
-      return res.status(404).json({ message: "No Investor posts found" });
-    }
-    
-    res.status(200).json(Investors ); // Corrected from "blog" to "blogs"
+    const investors = await Investor.find().sort({ updatedAt: -1 });
+    res.status(200).json(investors || []);
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Error fetching investors:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-//getting a single blog
+// Get a single investor by ID
 const getInvestorById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const Investors = await Investor.findById(id); // Changed "blogs" to "blog"
-
-    if (!Investors ) {
-      return res.status(404).json({ message: "Investor  not found" });
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid investor ID format" });
     }
-    res.status(200).json(Investors); // Now correctly returning "blog"
+
+    const investor = await Investor.findById(id);
+    if (!investor) {
+      return res.status(404).json({ message: "Investor not found" });
+    }
+    res.status(200).json(investor);
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Error fetching investor:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-// update all blogs
+// Update investor
 const updateInvestor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, subtitle,  description,image } = req.body;
-    let imageUrl = "";
-    //image uploading process
-    if (image) {
-      const result = await cloudinary.uploader.upload(image, {
-        folder: "blogs",
-      });
-      imageUrl = result.secure_url;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid investor ID format" });
     }
-    const updateinvestors = await Investor.findByIdAndUpdate(
+
+    const { title, subtitle, description, image } = req.body;
+    const existing = await Investor.findById(id);
+    if (!existing) {
+      return res.status(404).json({ message: "Investor not found" });
+    }
+
+    let imageUrl = existing.image;
+    if (image && image.startsWith("data:")) {
+      const result = await cloudinary.uploader.upload(image, { folder: "investor" });
+      imageUrl = result.secure_url;
+    } else if (image && (image.startsWith("http://") || image.startsWith("https://"))) {
+      imageUrl = image;
+    }
+
+    const updatedInvestor = await Investor.findByIdAndUpdate(
       id,
       {
-        title, subtitle,  description, 
+        title: title !== undefined ? title : existing.title,
+        subtitle: subtitle !== undefined ? subtitle : existing.subtitle,
+        description: description !== undefined ? description : existing.description,
         image: imageUrl,
       },
       { new: true }
     );
 
-    if (!updateinvestors) {
+    res.status(200).json({
+      message: "Investor updated successfully",
+      data: updatedInvestor,
+    });
+  } catch (error) {
+    console.error("Error updating investor:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// Delete investor by ID
+const deleteInvestor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid investor ID format" });
+    }
+
+    const deleted = await Investor.findByIdAndDelete(id);
+    if (!deleted) {
       return res.status(404).json({ message: "Investor not found" });
     }
 
     res.status(200).json({
-      message: "Investor is successfully updated successfully",
-      updateInvestor,
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-};
-
-// // delete a blog post by id
-
-const deleteInvestor = async (req, res) => {
-  try {
-    const { id } = req.params;
- 
-
-    // Validate if ID is a valid MongoDB ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid blog ID format" });
-    }
-
-
-    // Delete the blog
-    const deleteInvestors = await Blog.findByIdAndDelete(id);
-
-    res.status(200).json({
       message: "Investor successfully deleted",
-      deleteInvestors,
+      data: deleted,
     });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Error deleting investor:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-
-module.exports={
-    createInvestor,
-    getallInvestor,
-    getInvestorById,
-    updateInvestor,
-    deleteInvestor
+module.exports = {
+  createInvestor,
+  getallInvestor,
+  getInvestorById,
+  updateInvestor,
+  deleteInvestor
 };

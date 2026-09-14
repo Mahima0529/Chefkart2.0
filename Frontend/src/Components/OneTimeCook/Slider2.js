@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Carousel2 = () => {
   const slides = [
@@ -30,9 +31,11 @@ const Carousel2 = () => {
           </p>
 
           <div className="flex justify-center md:justify-start">
-            <button className="bg-orange-500 text-white font-bold text-sm md:text-lg lg:text-xl px-6 py-3 md:px-8 md:py-4 rounded-md mt-6 shadow-lg hover:bg-orange-600 hover:shadow-xl transition-all duration-300">
-              Get Started
-            </button>
+            <Link to="/chef-search">
+              <button className="bg-orange-500 text-white font-bold text-sm md:text-lg lg:text-xl px-6 py-3 md:px-8 md:py-4 rounded-md mt-6 shadow-lg hover:bg-orange-600 hover:shadow-xl transition-all duration-300">
+                Get Started
+              </button>
+            </Link>
           </div>
         </div>
       </div>

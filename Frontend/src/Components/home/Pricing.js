@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Pricing = () => {
   const pricingData = [
@@ -223,46 +224,50 @@ const Pricing = () => {
                 </div>
 
                 {/* Book Now */}
-                <button
-                  className="
-                    w-full
-                    bg-orange-500
-                    hover:bg-orange-600
-                    text-white
-                    font-bold
-                    text-lg
-                    md:text-xl
-                    py-4
-                    rounded-lg
-                    transition
-                    duration-300
-                    mb-5
-                  "
-                >
-                  Book Now
-                </button>
+                <Link to="/chef-search">
+                  <button
+                    className="
+                      w-full
+                      bg-orange-500
+                      hover:bg-orange-600
+                      text-white
+                      font-bold
+                      text-lg
+                      md:text-xl
+                      py-4
+                      rounded-lg
+                      transition
+                      duration-300
+                      mb-5
+                    "
+                  >
+                    Book Now
+                  </button>
+                </Link>
 
                 {/* Know More */}
-                <button
-                  className={`
-                    w-full
-                    font-bold
-                    text-lg
-                    md:text-xl
-                    py-4
-                    rounded-lg
-                    border
-                    transition
-                    duration-300
-                    ${
-                      plan.type === "green"
-                        ? "border-gray-400 text-white hover:bg-white hover:text-[#294b3c]"
-                        : "border-gray-400 text-black hover:bg-gray-100"
-                    }
-                  `}
-                >
-                  Know More
-                </button>
+                <Link to={plan.title.toLowerCase().includes("party") ? "/chef-for-party" : "/one-time-cook"}>
+                  <button
+                    className={`
+                      w-full
+                      font-bold
+                      text-lg
+                      md:text-xl
+                      py-4
+                      rounded-lg
+                      border
+                      transition
+                      duration-300
+                      ${
+                        plan.type === "green"
+                          ? "border-gray-400 text-white hover:bg-white hover:text-[#294b3c]"
+                          : "border-gray-400 text-black hover:bg-gray-100"
+                      }
+                    `}
+                  >
+                    Know More
+                  </button>
+                </Link>
 
               </div>
             </div>

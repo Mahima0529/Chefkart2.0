@@ -1,11 +1,17 @@
 const { createBooking, getBookings, getBookingById, updateBooking, deleteBooking } = require('../controller/Booking.Controller');
-const {verifyToken}=require('../middleware/AuthMiddleware')
+const { verifyToken } = require('../middleware/AuthMiddleware');
 const router = require('express').Router();
 
-router.post('/createBook',verifyToken ,createBooking );
-router.get('/get',  getBookings );
+router.post('/createBook', createBooking);
+router.post('/createBooking', createBooking);
+router.post('/create', createBooking);
+router.get('/get', getBookings);
+router.get('/getAll', getBookings);
 router.get('/get/:id', getBookingById);
-router.put('/update/:id',updateBooking) ;
+router.put('/updateBooking/:id', updateBooking);
+router.put('/update/:id', updateBooking);
+router.delete('/deleteBooking/:id', deleteBooking);
+router.delete('/delete/:id', deleteBooking);
+router.delete('/delete', deleteBooking);
 
-router.delete('/delete', deleteBooking)
 module.exports = router;

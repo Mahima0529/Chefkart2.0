@@ -1,101 +1,92 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+
+const steps = [
+  {
+    step: 1,
+    title: "Register on app",
+    desc: "Download the ChefKart App and register yourself in seconds.",
+    img: "https://storage.googleapis.com/chefkart-strapi-media/Register_on_app_4372ed1276.svg",
+  },
+  {
+    step: 2,
+    title: "Select Chefit - Cook for One Meal",
+    desc: "Choose Chefit from the ‘Our Services’ section on the homepage.",
+    img: "https://storage.googleapis.com/chefkart-strapi-media/select_your_service_7ba59dddd5.svg",
+  },
+  {
+    step: 3,
+    title: "Fill requirements & pay",
+    desc: "Share your culinary preferences and complete secure payment.",
+    img: "https://storage.googleapis.com/chefkart-strapi-media/make_payment_50309d2915.svg",
+  },
+  {
+    step: 4,
+    title: "Get a cook",
+    desc: "Get a trained & trusted cook at your doorstep within 60 minutes.",
+    img: "https://storage.googleapis.com/chefkart-strapi-media/Get_a_cook_b0e201f46a.svg",
+  },
+];
+
 const Work = () => {
   return (
-    <div>
-      <section className="text-gray-600 body-font">
-        <h1 className="text-5xl mt-16 text-black text-center">
-          <span className="text-black font-bold">How it </span>works?
-        </h1>
-        <div className="container px-5 py-24 mx-auto">
-          <div className="flex flex-wrap -m-4">
-            {/* Step 1 */}
-            <div className="p-4 lg:w-1/4 md:w-1/2 relative">
-              <div className="h-full flex flex-col items-center text-center relative">
-                <img
-                  alt="Register"
-                  className="flex-shrink-0 rounded-lg w-full h-72 object-cover object-center mb-4"
-src="https://storage.googleapis.com/chefkart-strapi-media/Register_on_app_4372ed1276.svg"
-/>
-                <FaArrowRight className="absolute top-1/2  left-72 transform -translate-y-1/2 text-orange-500 w-8 h-8" />
-                <div className="w-full">
-                  <h2 className="title-font font-medium text-lg text-gray-900">
-                    Register on app
-                  </h2>
-                  <p className="mb-4">
-                    Download the ChefKart App and register yourself.
-                  </p>
-                </div>
-              </div>
-            </div>
+    <section className="text-gray-600 body-font py-12 md:py-20 bg-white">
+      <div className="container px-5 mx-auto max-w-7xl">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl text-black text-center font-bold mb-12">
+          How it <span className="text-orange-500">works?</span>
+        </h2>
 
-            {/* Step 2 */}
-            <div className="p-4 lg:w-1/4 md:w-1/2 relative">
-              <div className="h-full flex flex-col items-center text-center relative">
-                <img
-                  alt="Select Service"
-                  className="flex-shrink-0 rounded-lg w-full h-72 object-cover object-center mb-4"
-src="https://storage.googleapis.com/chefkart-strapi-media/select_your_service_7ba59dddd5.svg"
-/>
-                <FaArrowRight className="absolute top-1/2 left-72 transform -translate-y-1/2 text-orange-500 w-8 h-8" />
-                <div className="w-full">
-                  <h2 className="title-font font-medium text-lg text-gray-900">
-                    Select Chefit - Cook for One Meal
-                  </h2>
-                  <p className="mb-4">
-                    Choose Chefit from the ‘Our Services’ section on homepage
-                  </p>
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          {steps.map((item, index) => (
+            <div
+              key={item.step}
+              className="flex flex-col items-center text-center relative bg-orange-50/40 p-6 rounded-2xl border border-orange-100/60 shadow-sm hover:shadow-md transition-shadow"
+            >
+              {/* Step Badge */}
+              <span className="w-8 h-8 rounded-full bg-orange-500 text-white font-bold flex items-center justify-center text-sm mb-4">
+                {item.step}
+              </span>
 
-            {/* Step 3 */}
-            <div className="p-4 lg:w-1/4 md:w-1/2 relative">
-              <div className="h-full flex flex-col items-center text-center relative">
-                <img
-                  alt="Payment"
-                  className="flex-shrink-0 rounded-lg w-full h-72 object-cover object-center mb-4"
-src="https://storage.googleapis.com/chefkart-strapi-media/make_payment_50309d2915.svg"
-/>
-                <FaArrowRight className="absolute top-1/2 left-64   ml-11 transform -translate-y-1/2 text-orange-500 w-8 h-8" />
-                <div className="w-full">
-                  <h2 className="title-font font-medium text-lg text-gray-900">
-                    Fill requirements & pay
-                  </h2>
-                  <p className="mb-4">
-                    Share your preferences and complete the payment.
-                  </p>
-                </div>
-              </div>
-            </div>
+              {/* Step Image */}
+              <img
+                alt={item.title}
+                src={item.img}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=300&q=80";
+                }}
+                className="rounded-xl w-full h-48 sm:h-52 object-contain mb-4"
+              />
 
-            {/* Step 4 */}
-            <div className="p-4 lg:w-1/4 md:w-1/2 relative">
-              <div className="h-full flex flex-col items-center text-center relative">
-                <img
-                  alt="Get a Cook"
-                  className="flex-shrink-0 rounded-lg w-full h-72 object-cover object-center mb-4"
-                 src="https://storage.googleapis.com/chefkart-strapi-media/Get_a_cook_b0e201f46a.svg"
-                />
-                <FaArrowRight className="absolute top-1/2 transform -translate-y-1/2 text-orange-500 w-8 h-8" />
-                <div className="w-full">
-                  <h2 className="title-font font-medium text-lg text-gray-900">
-                    Get a cook
-                  </h2>
-                  <p className="mb-4">
-                    Get a trained & trusted cook at your doorstep within 60
-                    minutes.
-                  </p>
+              {/* Arrow separator (hidden on mobile, visible only on desktop between steps) */}
+              {index < steps.length - 1 && (
+                <div className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-orange-200 rounded-full items-center justify-center shadow">
+                  <FaArrowRight className="text-orange-500 text-xs" />
                 </div>
+              )}
+
+              <div className="w-full flex flex-col flex-grow">
+                <h3 className="title-font font-bold text-lg text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4 flex-grow">
+                  {item.desc}
+                </p>
+
+                {item.step === 4 && (
+                  <Link to="/chef-search" className="mt-auto">
+                    <button className="bg-orange-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-orange-600 transition shadow">
+                      Book Now
+                    </button>
+                  </Link>
+                )}
               </div>
-              <button className="bg-white text-orange-500 text-md font-bold w-32 rounded-lg border-2 border-orange-400 h-12">
-                Book Now
-              </button>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 

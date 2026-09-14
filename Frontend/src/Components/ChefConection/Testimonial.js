@@ -138,7 +138,7 @@
 
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import axios from "axios";
+import api from "../../config/api";
 
 const Testimonial = () => {
   const [testimonialsData, setTestimonialsData] = useState([]);
@@ -146,10 +146,9 @@ const Testimonial = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get("https://chefkart2-0.onrender.com/testimonial/get");
-        if (response.data && response.data.data) {
-          setTestimonialsData(response.data.data);
-        }
+        const response = await api.get("/testimonial/get");
+        const raw = response.data;
+        setTestimonialsData(Array.isArray(raw) ? raw : raw?.data || []);
       } catch (error) {
         console.error("Failed to fetch testimonials:", error);
       }

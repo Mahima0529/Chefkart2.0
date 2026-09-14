@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BlogSection = () => {
   return (
@@ -35,6 +36,10 @@ const BlogSection = () => {
             <img
               src="https://thechefkart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fchefkart-strapi-media%2FBlog_ZO_02_c103cf5073.webp&w=1920&q=75"
               alt="6 things to keep in mind when hiring a cook for home"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80";
+              }}
               className="
                 absolute
                 inset-0
@@ -109,26 +114,28 @@ const BlogSection = () => {
 
         {/* View All Blogs */}
         <div className="flex justify-center mt-12">
-          <button
-            className="
-              bg-[#19191b]
-              text-white
-              text-lg
-              font-bold
-              py-4
-              px-7
-              rounded-xl
-              hover:bg-gray-800
-              transition
-              duration-300
-              flex
-              items-center
-              gap-2
-            "
-          >
-            View All Blogs
-            <span className="text-xl">›</span>
-          </button>
+          <Link to="/blog">
+            <button
+              className="
+                bg-[#19191b]
+                text-white
+                text-lg
+                font-bold
+                py-4
+                px-7
+                rounded-xl
+                hover:bg-orange-500
+                transition
+                duration-300
+                flex
+                items-center
+                gap-2
+              "
+            >
+              View All Blogs
+              <span className="text-xl">›</span>
+            </button>
+          </Link>
         </div>
 
       </div>

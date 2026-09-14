@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../../config/api";
 
 const Investors = () => {
   const [investors, setInvestors] = useState([]);
@@ -9,10 +9,11 @@ const Investors = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios
-      .get("https://chefkart2-0.onrender.com/investor/getinvestor")
+    api
+      .get("/investor/get")
       .then((res) => {
-        setInvestors(res.data);
+        const raw = res.data;
+        setInvestors(Array.isArray(raw) ? raw : raw?.data || []);
         setIsLoading(false);
       })
       .catch((err) => {

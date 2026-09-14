@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Lower = () => {
   return (
@@ -10,9 +11,12 @@ const Lower = () => {
 </h2>
 
 
-          <div className="md:w-3/5 md:pl-6  mt-4 md:mt-0">
-           <button className=' text-white ml-36 h-14 w-72 rounded-lg bg-orange-500  text-3xl font-bold'>Chefkart to join</button>
-            
+          <div className="md:w-3/5 md:pl-6 mt-4 md:mt-0">
+            <Link to="/register">
+              <button className='text-white ml-36 h-14 w-72 rounded-lg bg-orange-500 hover:bg-orange-600 text-3xl font-bold transition shadow-lg'>
+                ChefKart से जुड़ें
+              </button>
+            </Link>
           </div>
         </div>
       </section>

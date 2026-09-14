@@ -2,12 +2,13 @@ const { createKitchen, getallHomeImage, getHomeById, updateHomePage, deletehomeP
 
 const router = require('express').Router();
 
-router.post('/createHomePage', createKitchen)
+router.post('/createHomePage', createKitchen);
+router.post('/create', createKitchen);
 router.get('/getAll', getallHomeImage);
+router.get('/getall', getallHomeImage);
+router.get('/get', getallHomeImage);
 router.get('/get/:id', getHomeById);
-router.put('/update/:id',updateHomePage) ;
-router.delete('/delete/:id', deletehomePage)
- 
-
+router.put('/update/:id', updateHomePage);
+router.delete('/delete/:id', deletehomePage);
 
 module.exports = router;

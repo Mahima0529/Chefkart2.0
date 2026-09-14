@@ -40,12 +40,12 @@ const Navbar = () => {
 
         <Link
           to="/"
-          className="flex items-center flex-shrink-0"
+          className="flex items-center flex-shrink-0 hover:opacity-90 transition-opacity"
         >
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoErvIxAIWybuxDrbVZuRTz1B3ZaYWZTSqMw&s"
-            alt="ChefKart Logo"
-            className="w-48 h-auto"
+            alt="ChefKart"
+            className="h-9 sm:h-10 w-auto object-contain rounded"
           />
         </Link>
 
@@ -109,6 +109,17 @@ const Navbar = () => {
                   onClick={closeDropdown}
                 >
                   ChefKart से जुड़ें
+                  <FaChevronRight />
+                </Link>
+
+                <hr />
+
+                <Link
+                  to="/register"
+                  className="px-4 py-4 flex items-center justify-between text-lg font-bold text-orange-600 hover:text-orange-700"
+                  onClick={closeDropdown}
+                >
+                  <span>👨‍🍳 Cook Registration</span>
                   <FaChevronRight />
                 </Link>
 
@@ -369,6 +380,29 @@ const Navbar = () => {
               onClick={closeMenu}
             >
               Testimonials
+            </Link>
+
+
+            {/* COOK REGISTRATION */}
+
+            <Link
+              to="/register"
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 text-gray-900 hover:text-orange-500 flex items-center justify-between"
+              onClick={closeMenu}
+            >
+              <span>👨‍🍳 Register as a Cook</span>
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-semibold">Join</span>
+            </Link>
+
+
+            {/* ADMIN DASHBOARD */}
+
+            <Link
+              to="/dashboard"
+              className="block px-8 py-5 text-xl font-bold border-t border-gray-200 text-orange-500 hover:text-orange-600"
+              onClick={closeMenu}
+            >
+              Admin Dashboard
             </Link>
 
 

@@ -8,10 +8,8 @@ const FoodSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }
 });
 
-// Middleware to update the updatedAt field before saving
-FoodSchema.pre('save', function(next) {
+FoodSchema.pre('save', function() {
     this.updatedAt = Date.now();
-    next();
 });
 
 module.exports = mongoose.model('Food', FoodSchema);

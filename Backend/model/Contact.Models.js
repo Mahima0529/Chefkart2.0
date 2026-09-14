@@ -5,14 +5,17 @@ const ContactSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     email: { type: String, required: true },
     city: { type: String, required: true },
-    area: { type: String, required: true },
+    area: { type: String },
+    message: { type: String },
     updatedAt: { type: Date, default: Date.now }
 });
 
 // Middleware to update the updatedAt field before saving
 ContactSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
-    next();
+    if (typeof next === 'function') {
+        next();
+    }
 });
 
 module.exports = mongoose.model('Contact', ContactSchema);

@@ -2,12 +2,12 @@ const { createInvestor, getallInvestor, getInvestorById, updateInvestor, deleteI
 
 const router = require('express').Router();
 
-router.post('/createInvestor', createInvestor)
+router.post('/createInvestor', createInvestor);
+router.post('/create', createInvestor);
 router.get('/getinvestor', getallInvestor);
+router.get('/get', getallInvestor);
 router.get('/get/:id', getInvestorById);
-router.put('/update/:id',updateInvestor) ;
-router.delete('/delete/:id', deleteInvestor)
- 
-
+router.put('/update/:id', updateInvestor);
+router.delete('/delete/:id', deleteInvestor);
 
 module.exports = router;

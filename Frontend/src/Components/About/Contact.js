@@ -2,8 +2,8 @@ import React from "react";
 
 const Contacts = () => {
   return (
-    <section className="text-gray-600 body-font relative">
-      <div className="container px-5 py-16 md:py-24 mx-auto">
+    <section className="text-gray-900 bg-white body-font relative">
+      <div className="container px-5 py-16 md:py-24 mx-auto max-w-7xl">
 
         <div className="flex flex-col lg:flex-row items-center gap-8">
 

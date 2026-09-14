@@ -15,18 +15,20 @@ const Carousel2 = () => {
     <div className="relative w-full h-screen">
       {/* Slide */}
       <div
-        className="w-full h-full flex items-center text-white bg-cover bg-center transition-all duration-500"
+        className="w-full h-full flex items-center text-white bg-cover bg-center transition-all duration-500 relative"
         style={{
-          backgroundImage: 'url("https://thechefkart.com/_next/image?url=https%3A%2F%2Fchefkart-strapi-media.s3.ap-south-1.amazonaws.com%2FInvestor_Hero_banner_1_f1154a025e.webp&w=1920&q=75")'
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&auto=format&fit=crop&q=80")'
         }}
-        
       >
         {/* Text Section */}
-        <div className="w-full md:w-1/2 p-10 md:p-16 rounded-r-lg ml-4">
-          <h1 className="text-5xl  font-bold mt-20">We are<span className="text-orange-500 font-bold ">{" "} category creators, <span className="text-white font-bold">dedicated to</span> simplifying the way India eats </span></h1>
-          <p className="text-3xl  mt-10">{slides.description}</p>
-
-        
+        <div className="w-full md:w-2/3 lg:w-1/2 p-6 sm:p-10 md:p-16 rounded-r-lg ml-0 sm:ml-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-10 sm:mt-20 leading-tight">
+            We are <span className="text-orange-500 font-bold">category creators, </span>
+            <span className="text-white font-bold">dedicated to simplifying the way India eats.</span>
+          </h1>
+          <p className="text-lg sm:text-2xl text-gray-200 mt-6 sm:mt-8 font-medium">
+            {slides[0]?.description || "Experience culinary excellence with verified professional chefs delivered to your home."}
+          </p>
         </div>
       </div>
 

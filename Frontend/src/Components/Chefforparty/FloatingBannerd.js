@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const FloatingBanner = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -95,33 +96,36 @@ const FloatingBanner = () => {
 
         {/* BUTTON */}
 
-        <button
-          className="
-            bg-orange-500
-            hover:bg-orange-600
+        <Link to="/chef-search">
+          <button
+            className="
+              bg-orange-500
+              hover:bg-orange-600
 
-            text-white
+              text-white
 
-            px-5
-            py-2
+              px-5
+              py-2
 
-            sm:px-6
-            sm:py-2.5
+              sm:px-6
+              sm:py-2.5
 
-            rounded-lg
+              rounded-lg
 
-            font-bold
+              font-bold
 
-            text-sm
-            sm:text-base
+              text-sm
+              sm:text-base
 
-            whitespace-nowrap
+              whitespace-nowrap
 
-            flex-shrink-0
-          "
-        >
-          Book Now
-        </button>
+              flex-shrink-0
+              transition
+            "
+          >
+            Book Now
+          </button>
+        </Link>
 
       </div>
     </div>

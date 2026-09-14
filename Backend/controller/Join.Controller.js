@@ -37,16 +37,11 @@ const createJoin = async (req, res) => {
   }
 };
 
-// get all blog posts
+// get all join posts
 const getallJoins = async (req, res) => {
   try {
-    const Joins = await Join.find();
-
-    if (!Joins.length) {
-      return res.status(404).json({ message: "No Join posts found" });
-    }
-    
-    res.status(200).json(Joins); // Corrected from "blog" to "blogs"
+    const joins = await Join.find().sort({ updatedAt: -1 });
+    res.status(200).json(joins || []);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -56,17 +51,20 @@ const getallJoins = async (req, res) => {
 };
 
 
-//getting a single blog
+//getting a single join post
 const getJoinById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const Joins = await Join.findById(id); // Changed "blogs" to "blog"
-
-    if (!Joins) {
-      return res.status(404).json({ message: "Join not found" });
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid ID format" });
     }
-    res.status(200).json(Joins); // Now correctly returning "blog"
+
+    const joinItem = await Join.findById(id);
+
+    if (!joinItem) {
+      return res.status(404).json({ message: "Join item not found" });
+    }
+    res.status(200).json(joinItem);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
@@ -76,36 +74,44 @@ const getJoinById = async (req, res) => {
 };
 
 
-// // update all blogs
+// update join post
 const updateJoins = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content,image } = req.body;
-    let imageUrl = "";
-    //image uploading process
-    if (image) {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+
+    const { title, content, image } = req.body;
+    const existingJoin = await Join.findById(id);
+    if (!existingJoin) {
+      return res.status(404).json({ message: "Join item not found" });
+    }
+
+    let imageUrl = existingJoin.image;
+    if (image && image.startsWith("data:")) {
       const result = await cloudinary.uploader.upload(image, {
-        folder: "blogs",
+        folder: "join",
       });
       imageUrl = result.secure_url;
+    } else if (image && (image.startsWith("http://") || image.startsWith("https://"))) {
+      imageUrl = image;
     }
-    const updateBlogs = await Join.findByIdAndUpdate(
+
+    const updated = await Join.findByIdAndUpdate(
       id,
       {
-        title,
-        content,
+        title: title !== undefined ? title : existingJoin.title,
+        content: content !== undefined ? content : existingJoin.content,
         image: imageUrl,
       },
       { new: true }
     );
 
-    if (!updateBlogs) {
-      return res.status(404).json({ message: "Join not found" });
-    }
-
     res.status(200).json({
-      message: "Joins  is successfully updated successfully",
-      updateBlogs,
+      message: "Join item updated successfully",
+      updateBlogs: updated,
+      data: updated
     });
   } catch (error) {
     console.error("Error:", error);
@@ -115,30 +121,25 @@ const updateJoins = async (req, res) => {
   }
 };
 
-// // delete a blog post by id
-
-const deleteJoin= async (req, res) => {
+// delete a join post by id
+const deleteJoin = async (req, res) => {
   try {
     const { id } = req.params;
- 
-
-    // Validate if ID is a valid MongoDB ObjectId
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid blog ID format" });
+      return res.status(400).json({ message: "Invalid ID format" });
     }
 
-    // Check if the blog exists before deletion
     const existingJoin = await Join.findById(id);
-    if (!existingJoin ) {
-      return res.status(404).json({ message: "Join not found" });
+    if (!existingJoin) {
+      return res.status(404).json({ message: "Join item not found" });
     }
 
-    // Delete the blog
-    const deletedBlog = await Join.findByIdAndDelete(id);
+    const deleted = await Join.findByIdAndDelete(id);
 
     res.status(200).json({
-      message: "Join successfully deleted",
-      deletedBlog,
+      message: "Join item successfully deleted",
+      deletedBlog: deleted,
+      data: deleted
     });
   } catch (error) {
     console.error("Error:", error);

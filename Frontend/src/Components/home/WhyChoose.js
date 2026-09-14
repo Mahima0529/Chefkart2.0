@@ -289,7 +289,7 @@ const WhyChooseUs = () => {
         "
         style={{
           backgroundImage:
-            "linear-gradient(rgba(45,32,28,0.88), rgba(45,32,28,0.88)), url('/images/why-choose-bg.jpg')",
+            "linear-gradient(rgba(45,32,28,0.88), rgba(45,32,28,0.88)), url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&auto=format&fit=crop&q=80')",
         }}
       />
 

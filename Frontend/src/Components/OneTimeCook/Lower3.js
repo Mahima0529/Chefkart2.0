@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Lower3 = () => {
   return (
@@ -20,9 +21,11 @@ const Lower3 = () => {
                 Get a professional cook within 60 minutes
               </p>
               <div className="flex justify-center lg:justify-start mt-6">
-                <button className="bg-black text-white w-32 rounded-lg h-12 font-bold">
-                  Book Now
-                </button>
+                <Link to="/chef-search">
+                  <button className="bg-black hover:bg-orange-600 text-white w-32 rounded-lg h-12 font-bold transition">
+                    Book Now
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Carousel2 = () => {
   return (
@@ -47,32 +48,34 @@ const Carousel2 = () => {
             Find your perfect cook
           </p>
 
-          <button
-            type="button"
-            className="
-              bg-orange-500
-              hover:bg-orange-600
-              text-white
-              font-bold
-              text-base
-              sm:text-lg
-              md:text-xl
-              px-7
-              sm:px-8
-              md:px-10
-              py-3
-              sm:py-4
-              rounded-lg
-              mt-7
-              sm:mt-8
-              shadow-lg
-              hover:shadow-xl
-              transition-all
-              duration-300
-            "
-          >
-            Download Our App
-          </button>
+          <Link to="/chef-search">
+            <button
+              type="button"
+              className="
+                bg-orange-500
+                hover:bg-orange-600
+                text-white
+                font-bold
+                text-base
+                sm:text-lg
+                md:text-xl
+                px-7
+                sm:px-8
+                md:px-10
+                py-3
+                sm:py-4
+                rounded-lg
+                mt-7
+                sm:mt-8
+                shadow-lg
+                hover:shadow-xl
+                transition-all
+                duration-300
+              "
+            >
+              Find Your Cook Now
+            </button>
+          </Link>
 
         </div>
       </div>

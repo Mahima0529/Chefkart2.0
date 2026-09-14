@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Carousel2 = () => {
   return (
@@ -110,40 +111,42 @@ const Carousel2 = () => {
 
 
           {/* Button */}
-          <button
-            className="
-              bg-orange-500
-              hover:bg-orange-600
+          <Link to="/chef-search">
+            <button
+              className="
+                bg-orange-500
+                hover:bg-orange-600
 
-              text-white
+                text-white
 
-              font-bold
+                font-bold
 
-              text-base
-              sm:text-lg
-              md:text-xl
+                text-base
+                sm:text-lg
+                md:text-xl
 
-              px-7
-              sm:px-8
-              md:px-10
+                px-7
+                sm:px-8
+                md:px-10
 
-              py-3
-              sm:py-4
+                py-3
+                sm:py-4
 
-              rounded-lg
+                rounded-lg
 
-              mt-7
-              sm:mt-8
+                mt-7
+                sm:mt-8
 
-              shadow-lg
-              hover:shadow-xl
+                shadow-lg
+                hover:shadow-xl
 
-              transition-all
-              duration-300
-            "
-          >
-            Get Started
-          </button>
+                transition-all
+                duration-300
+              "
+            >
+              Get Started
+            </button>
+          </Link>
 
         </div>
 

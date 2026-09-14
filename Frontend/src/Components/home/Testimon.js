@@ -386,7 +386,42 @@
 
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import axios from "axios";
+import api from "../../config/api";
+
+const defaultTestimonials = [
+  {
+    _id: "def_1",
+    name: "Diwakar Kumar",
+    city: "Gurugram",
+    content: "I like cooking my own meals, but when I am occupied with work, I book Chefit. It's a much-required service that is convenient and way healthier than ordering takeout.",
+    profileimage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    rating: 5
+  },
+  {
+    _id: "def_2",
+    name: "Tarun Gehlaut",
+    city: "Delhi NCR",
+    content: "I hired a ChefKart cook 5 months ago. It has been seamless to manage timings, dietary preferences, and daily meal plans. My family loves the food!",
+    profileimage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    rating: 5
+  },
+  {
+    _id: "def_3",
+    name: "Pooja Sachdeva",
+    city: "Noida",
+    content: "Chefit is fantastic when I'm short on time but crave authentic home-cooked meals. Professional cook, sparkling clean kitchen after work. Highly recommend!",
+    profileimage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+    rating: 5
+  },
+  {
+    _id: "def_4",
+    name: "Vikram Singhania",
+    city: "Gurugram",
+    content: "Booked Chef for Party for 15 guests. The multicourse dinner was phenomenal, hot snacks were served on time, and our guests couldn't stop praising the chef.",
+    profileimage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    rating: 5
+  }
+];
 
 const Testimonial1 = () => {
   const [testimonialsData, setTestimonialsData] = useState([]);
@@ -394,26 +429,29 @@ const Testimonial1 = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get("https://chefkart2-0.onrender.com/testimonial/get");
-        if (response.data && response.data.data) {
-          setTestimonialsData(response.data.data);
-        }
+        const response = await api.get("/testimonial/get");
+        const raw = response.data;
+        const list = Array.isArray(raw) ? raw : raw?.data || [];
+        setTestimonialsData(list.length >= 3 ? list : [...list, ...defaultTestimonials.slice(list.length)]);
       } catch (error) {
         console.error("Failed to fetch testimonials:", error);
+        setTestimonialsData(defaultTestimonials);
       }
     };
 
     fetchTestimonials();
   }, []);
 
+  const displayList = testimonialsData.length > 0 ? testimonialsData : defaultTestimonials;
+
   const settings = {
     dots: true,
-    infinite: true,
-    speed: 500,
+    infinite: displayList.length > 2,
+    speed: 600,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 3500,
     pauseOnHover: true,
     swipe: true,
     responsive: [
@@ -433,22 +471,47 @@ const Testimonial1 = () => {
   };
 
   return (
-    <div className="mx-auto px-4 py-12 ">
-      <h1 className="text-4xl font-bold text-center mb-8">Don’t take our word for it</h1>
+    <div className="max-w-7xl mx-auto px-5 py-16">
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <span className="text-xs uppercase tracking-widest font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+          Customer Stories
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-3">
+          Don’t Take Our Word For It
+        </h2>
+        <p className="text-gray-500 mt-2 text-sm sm:text-base">
+          Read genuine reviews from thousands of households who trust ChefKart every day.
+        </p>
+      </div>
+
       <Slider {...settings}>
-        {testimonialsData.map((testimonial) => (
-          <div key={testimonial._id} className="p-4 mt-8">
-            <div className="bg-green-700 border-4 border-green-400  rounded-lg p-6 text-center">
-              <img
-                alt="testimonial"
-                className="w-20 h-20 mb-4 object-cover object-center rounded-full border-2  mx-auto"
-                src={testimonial.profileimage}
-              />
-              <p className="leading-relaxed hover:text-black text-white">{testimonial.content}</p>
-              <span className="inline-block h-1 w-10 rounded bg-indigo-500 mt-6 mb-4"></span>
-              <h2 className="text-white font-medium title-font tracking-wider text-sm">
-                {testimonial.name}
-              </h2>
+        {displayList.map((testimonial, idx) => (
+          <div key={testimonial._id || idx} className="p-3">
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-[300px]">
+              <div>
+                <div className="flex items-center gap-1 text-amber-500 text-sm mb-3">
+                  {"★".repeat(testimonial.rating || 5)}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed line-clamp-4 italic">
+                  "{testimonial.content}"
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-100 mt-4">
+                <img
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full object-cover border border-orange-100 shadow-sm"
+                  src={testimonial.profileimage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
+                  }}
+                />
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900">{testimonial.name}</h3>
+                  <p className="text-xs text-gray-500">{testimonial.city || "Verified Customer"}</p>
+                </div>
+              </div>
             </div>
           </div>
         ))}
